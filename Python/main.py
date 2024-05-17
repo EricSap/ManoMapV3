@@ -217,13 +217,14 @@ def main():
 
     def placeComment():
         global commentsDict
-        time = timeText.get("1.0", "end-1c")
+        time = get_time_text()
+        print(time)
         comment = commentText.get("1.0", "end-1c")
         if manoutils.validateTime(time):
             commentsDict[manoutils.convertTime(time)] = comment
+            messagebox.showinfo("Event", "Event placed at " + time)
         else:
             messagebox.showinfo("Error", "You must enter the right format of time (HH:MM:SS)")
-        timeText.delete("1.0", "end")
         commentText.delete("1.0", "end")
 
     root = tk.Tk()
@@ -420,15 +421,35 @@ def main():
     timecommentBundle.pack(padx=20, pady=20)
     timeAndCommentText = tk.StringVar()
     time_comment_label = tk.Label(timecommentBundle, textvariable=timeAndCommentText)
-    timeAndCommentText.set("Time & Comment: (HH:MM:SS)")
+    timeAndCommentText.set("Time & Event: (HH:MM:SS)")
     time_comment_label.pack()
-    timeText = tk.Text(timecommentBundle, height=1, width=10)
-    timeText.pack(side=tk.LEFT)
+    hourText = tk.Text(timecommentBundle, height=1, width=2)
+    hourText.pack(side=tk.LEFT)
+    commaInBetween = tk.Label(timecommentBundle, text=":")
+    commaInBetween.pack(side=tk.LEFT)
+    minText = tk.Text(timecommentBundle, height=1, width=2)
+    minText.pack(side=tk.LEFT)
+    commaInBetween = tk.Label(timecommentBundle, text=":")
+    commaInBetween.pack(side=tk.LEFT)
+    secText = tk.Text(timecommentBundle, height=1, width=2)
+    secText.pack(side=tk.LEFT)
+    commaInBetween = tk.Label(timecommentBundle, text=",")
+    commaInBetween.pack(side=tk.LEFT)
     commentText = tk.Text(timecommentBundle, height=1, width=50)
     commentText.pack(side=tk.RIGHT)
 
-    placeCommentButton = tk.Button(settings_frame, text="Place Comment", command=placeComment)
+    placeCommentButton = tk.Button(settings_frame, text="Place Event", command=placeComment)
     placeCommentButton.pack(pady=10, padx=10)
+
+    def get_time_text():
+        # Get the content of each Text widget and strip any extra whitespace
+        hour = hourText.get("1.0", tk.END).strip()
+        minute = minText.get("1.0", tk.END).strip()
+        second = secText.get("1.0", tk.END).strip()
+    
+        # Combine the time components and the comment
+        time_text = f"{hour}:{minute}:{second}"
+        return time_text
 
     # data frame
     data_title = tk.StringVar()
