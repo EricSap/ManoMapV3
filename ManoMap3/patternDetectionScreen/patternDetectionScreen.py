@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import display_excel_filename, clear_screen
+from utils import display_txt_filename, clear_screen
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -9,11 +9,11 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     main_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
     # Title 
-    title_label = ctk.CTkLabel(main_frame, text="Automatic Pattern Detection", font=("Arial", 20, "bold"))
+    title_label = ctk.CTkLabel(main_frame, text="Pattern Detection", font=("Arial", 20, "bold"))
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
     # Top Buttons
-    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_excel_filename(root))
+    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root))
     button_select_input.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
     button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command=None)
