@@ -7,7 +7,7 @@ from utils import go_back
 def create_main_screen():
     app = ctk.CTk()
     app.title("CustomTkinter Application")
-    app.geometry("500x300")
+    app.geometry("1200x800")
 
     title_label = ctk.CTkLabel(app, text="What do you like to do?", font=("Arial", 20, "bold"))
     title_label.pack(pady=20)
