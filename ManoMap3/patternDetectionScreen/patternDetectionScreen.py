@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import display_excel_filename, clear_screen, create_button, create_label
+from utils import display_excel_filename, clear_screen
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -8,7 +8,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     main_frame = ctk.CTkFrame(root)
     main_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-    # Title Label
+    # Title 
     title_label = ctk.CTkLabel(main_frame, text="Automatic Pattern Detection", font=("Arial", 20, "bold"))
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
@@ -46,27 +46,3 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     main_frame.grid_columnconfigure(2, weight=1)
     main_frame.grid_rowconfigure(2, weight=1)
 
-
-
-
-
-
-
-
-
-
-
-# import customtkinter as ctk
-# from utils import display_excel_filename, clear_screen, create_button, create_label
-
-# def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
-#     clear_screen(root)
-
-#     create_label(root, "Pattern Detection")
-
-#     create_button(root, "Select Input File", command=lambda: display_excel_filename(root))
-#     create_button(root, "Plot Data", command=None)
-#     create_button(root, "Detect Events", command=None)
-#     create_button(root, "Plot Signals", command=None)
-#     create_button(root, "Export", command=None)
-#     create_button(root, "Back", command=lambda: go_back_func(root, create_main_screen_func))
