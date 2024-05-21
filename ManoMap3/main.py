@@ -1,6 +1,7 @@
 import customtkinter as ctk
-from patternDetectionScreen import open_screen_for_pattern_detection
-from exportToExcelScreen import export_to_excel_screen
+from exportToExcelScreen.exportToExcelScreen import export_to_excel_screen
+from patternDetectionScreen.patternDetectionScreen import open_screen_for_pattern_detection
+
 from utils import go_back
 
 def create_main_screen():
