@@ -2,6 +2,7 @@ import customtkinter as ctk
 from utils import display_excel_filename, clear_screen
 from exportToExcelScreen.events import create_event_frame
 from exportToExcelScreen.sensors import create_sensors_frame
+from exportToExcelScreen.plotData import plot_topographic_data
 
 def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -18,7 +19,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_excel_filename(root))
     button_select_input.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
-    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command=None)
+    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command=lambda:plot_topographic_data())
     button_plot_data.grid(row=1, column=1, columnspan=3, padx=10, pady=10, sticky="ew")
 
     # Sensors Frame
