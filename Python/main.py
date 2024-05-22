@@ -85,6 +85,8 @@ def main():
         try:
             global commentsDict
             slidervals = visibleSensorSlider.getValues()
+            print("slidervals: ",slidervals)
+            print("slidervals type: ", type(slidervals))
             first_sensor = int(slidervals[0])
             last_sensor = int(slidervals[1])
             thresholdVals = thresholdSlider.getValues()
