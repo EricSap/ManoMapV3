@@ -1,7 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import patternDetectionScreen.manoutils as manoutils
+import manoutilsv2 as manoutils
 
 #Toont plot in matplotlib nieuwe window. Kan naar externe module gerefactord worden
 def showPlot(firstSensor, lastSensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap='inferno', smoothing_strength=1):
