@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen
+from utils import display_txt_filename, clear_screen, detectEvents, clearEvents
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
@@ -68,17 +68,21 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     settings_label.pack(pady=10)
 
     # Bottom Buttons
-    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: test_advanced_sliders(advanced_sliders))
+    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=detectEvents)
+
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
+    button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)
+    button_detect_events.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+
     button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=None)
-    button_plot_signals.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+    button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
     button_export = ctk.CTkButton(main_frame, text="Export", command=None)
-    button_export.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
+    button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
-    button_back.grid(row=4, column=0, columnspan=3, pady=10, sticky="ew")
+    button_back.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
 
     # Configure grid weights for responsiveness
     main_frame.grid_columnconfigure(0, weight=1)

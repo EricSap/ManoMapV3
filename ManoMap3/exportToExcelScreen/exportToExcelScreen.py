@@ -1,7 +1,8 @@
 import customtkinter as ctk
 from utils import display_excel_filename, clear_screen
-from exportToExcelScreen.events import create_event_frame
+from exportToExcelScreen.events import create_event_interface, show_comments
 from exportToExcelScreen.sensors import create_sensors_frame
+from exportToExcelScreen.plotData import plot_topographic_data
 
 def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -18,7 +19,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_excel_filename(root))
     button_select_input.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
-    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command=None)
+    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command=lambda:plot_topographic_data())
     button_plot_data.grid(row=1, column=1, columnspan=3, padx=10, pady=10, sticky="ew")
 
     # Sensors Frame
@@ -33,11 +34,13 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     # Events Frame
     events_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray")
     events_frame.grid(row=2, column=1, columnspan=3, pady=20, padx=20, sticky="nsew")
-    create_event_frame(events_frame)
+    
 
     # Label for Events frame
     events_label = ctk.CTkLabel(events_frame, text="Events", font=("Arial", 14, "bold"))
     events_label.pack(pady=10)
+    create_event_interface(events_frame)
+    
 
     # Bottom Buttons
     button_export = ctk.CTkButton(main_frame, text="Export", command=None)
