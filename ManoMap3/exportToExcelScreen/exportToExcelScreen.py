@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from exportToExcelScreen.export import exportToCsv, exportToXlsx
+from exportToExcelScreen.export import exportToXlsx
 from utils import clear_screen
 from exportToExcelScreen.events import create_event_interface, show_comments
 from exportToExcelScreen.sensors import create_sensors_frame
