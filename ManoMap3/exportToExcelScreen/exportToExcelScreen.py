@@ -37,15 +37,15 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     sliders = create_sensors_frame(sensors_frame)
     print(sliders)
 
-    # Placeholder for Sensor frame
+    # Label for Sensor frame
     sensors_label = ctk.CTkLabel(sensors_frame, text="Sensors", font=("Arial", 14, "bold"))
     sensors_label.pack(pady=10)
 
     # Events Frame
     events_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray")
     events_frame.grid(row=2, column=1, columnspan=3, pady=20, padx=20, sticky="nsew")
-    
-    # Placeholder for Events frame
+
+    # Label for Events frame
     events_label = ctk.CTkLabel(events_frame, text="Events", font=("Arial", 14, "bold"))
     events_label.pack(pady=10)
     create_event_interface(events_frame)

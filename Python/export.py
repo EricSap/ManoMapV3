@@ -59,6 +59,7 @@ def createExcelWorkBook(name, startAscending, startTransverse, startDescending, 
     contractionsDict = dict()
     for line in data:
         # calculate max amplitude
+        # print("line ",line)
         max_y_values = []
         contractionsDict = dict()
         # to see position where y max is
@@ -81,14 +82,16 @@ def createExcelWorkBook(name, startAscending, startTransverse, startDescending, 
         gran = manoutils.get_granularity_factor()
         time = gran * len(line['sequences'])
         # last sensor - first * distance between each sensor = total distance, time is in decaseconds => *10, distance in mm => *10
-        velocity = (line['sequences'][-1][-1][0] - line['sequences'][0][0][0]) * distance / time * 100
+        startSensor = line['sequences'][0][0][0]
+        endSensor = line['sequences'][-1][-1][0]
+        # print("startSensor ",startSensor)
+        # print("endSensor ",endSensor)
+        velocity = (endSensor - startSensor) * distance / time * 100
         # decide ant/retr
         if (velocity > 0):
             direction = 'Ant'
         else:
             direction = 'Retr'
-        startSensor = line['sequences'][0][0][0]
-        endSensor = line['sequences'][-1][-1][0]
 
         # simultaan = gehele colon en snelheid infinite => all highpoints zelfde measurement
         if startSensor == first_sensor and endSensor == last_sensor:

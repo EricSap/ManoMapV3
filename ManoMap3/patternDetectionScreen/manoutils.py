@@ -173,4 +173,3 @@ def data_preperation(dict):
     wieners = wiener_filter_dict(savitzky)
     baselineremoval2 = baseline_removal(wieners)
     return baselineremoval2
-
