@@ -1,31 +1,31 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen, detectEvents, clearEvents
+from utils import display_txt_filename, clear_screen, detectEvents, clearEvents, showPlotPressed
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
-global valuesDict
+# global valuesDict
 
-commentsDict = dict()
-contractions = []
-exportDataXml = []
-differentialMode = False
+# commentsDict = dict()
+# contractions = []
+# exportDataXml = []
+# differentialMode = False
 
-def showPlotPressed(sliders):
-    try:
-        global commentsDict
-        thresholdVals = list(sliders[0].get())
-        visible_sensors = list(sliders[1].get())
-        print("visible sensors: ",visible_sensors)
-        print("type; ",type(visible_sensors))
-        first_sensor = visible_sensors[0]
-        last_sensor = visible_sensors[1]
-        minThreshold = thresholdVals[0]
-        maxThreshold = thresholdVals[1]
-        colormap = "inferno"
-        heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
-    except NameError:
-        # messagebox.showinfo("Error", "Please select a file.")
-        print("Please select a file.")
+# def showPlotPressed(sliders):
+#     try:
+#         global commentsDict
+#         thresholdVals = list(sliders[0].get())
+#         visible_sensors = list(sliders[1].get())
+#         print("visible sensors: ",visible_sensors)
+#         print("type; ",type(visible_sensors))
+#         first_sensor = visible_sensors[0]
+#         last_sensor = visible_sensors[1]
+#         minThreshold = thresholdVals[0]
+#         maxThreshold = thresholdVals[1]
+#         colormap = "inferno"
+#         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
+#     except NameError:
+#         # messagebox.showinfo("Error", "Please select a file.")
+#         print("Please select a file.")
 
 def test_advanced_sliders(sliders):
     for slider in sliders:
