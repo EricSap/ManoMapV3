@@ -33,4 +33,4 @@ def create_sensors_frame(root):
 
         sliders.append(slider)
 
-    return sensors_frame, sliders
+    return sliders
