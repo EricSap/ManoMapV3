@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 def exportToXlsx(data, file_name, sliders):
     # Split the file path into the base name and extension
