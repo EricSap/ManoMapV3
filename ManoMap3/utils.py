@@ -51,29 +51,42 @@ def display_txt_filename(root):
         label = ctk.CTkLabel(root, text="Selected Text File: " + filename, font=("Arial", 12))
         label.pack(pady=10)
         valuesDict = CSVToDict(file_path)
-        print(valuesDict)
+        #print(valuesDict)
         # try:
         # except:
         #     print("Error converting to Dict")
     else:
         print("No file selected.")
 
-def detectEvents():
+def detectEventsPressed(sliders, advanced_sliders):
     try: 
-        global valueDict
+        global valuesDict
         global contractions
 
-        thresholdVals = {10, 200}
-        detectionThreshold = 10
-        filedata = data_preperation(valueDict)
-        first_sensor = 5
-        second_sensor = 20
-        results = find_patterns_from_values_dict(filedata, first_sensor, second_sensor, thresholdVals, detectionThreshold)
+        #return threshold values
+        thresholdVals = list(sliders[0].get())
+        detectionThreshold = int(advanced_sliders[4].get())
+        amountofSensors = int(advanced_sliders[2].get())
+        amountofOverlapped = int(advanced_sliders[1].get())
+
+        #data preperation
+        filedata = data_preperation(valuesDict)
+
+        #return sensor values
+        slidervals = list(sliders[1].get())
+        first_sensor = int(slidervals[0])
+        last_sensor = int(slidervals[1])
+
+        #pattern detedction
+        results = find_patterns_from_values_dict(filedata, first_sensor, last_sensor, detectionThreshold,amount_of_sensors=amountofSensors, amount_overlapped=amountofOverlapped)
+
+        #contraction detection
         contractions = find_contractions_from_patterns(results, 2)
+        print("contractions", contractions)
         messagebox.showinfo("detection", "detection completed!")
         print("detection worked!!!")
     except NameError:
-        messagebox.showinfo("Error", "Please select a file.")
+        messagebox.showinfo("hahahha")
         print("detection didn't work...")
 
 def clearEvents():

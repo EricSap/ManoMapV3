@@ -161,6 +161,6 @@ def find_contractions_from_patterns(pattern_results, contraction_length, filterO
 
 # MAIN FUNCTION OF FILE, THIS IS IS THE FUNCTION THAT WILL BE CALLED EXTERNALLY
 def find_patterns_from_values_dict(valuedict, first_sensor, last_sensor, threshold, amount_of_sensors=3, amount_overlapped=2):
-    data_dict = manoutils.transform_dict_per_timeframe_to_per_sensor(valuedict)
+    data_dict = transform_dict_per_timeframe_to_per_sensor(valuedict)
     return find_pattern(data_dict, first_sensor, last_sensor, threshold, amount_of_sensors=amount_of_sensors, amount_overlapped=amount_overlapped)
 

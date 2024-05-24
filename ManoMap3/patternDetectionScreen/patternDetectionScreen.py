@@ -1,31 +1,7 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen, detectEvents, clearEvents, showPlotPressed
+from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
-
-# global valuesDict
-
-# commentsDict = dict()
-# contractions = []
-# exportDataXml = []
-# differentialMode = False
-
-# def showPlotPressed(sliders):
-#     try:
-#         global commentsDict
-#         thresholdVals = list(sliders[0].get())
-#         visible_sensors = list(sliders[1].get())
-#         print("visible sensors: ",visible_sensors)
-#         print("type; ",type(visible_sensors))
-#         first_sensor = visible_sensors[0]
-#         last_sensor = visible_sensors[1]
-#         minThreshold = thresholdVals[0]
-#         maxThreshold = thresholdVals[1]
-#         colormap = "inferno"
-#         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
-#     except NameError:
-#         # messagebox.showinfo("Error", "Please select a file.")
-#         print("Please select a file.")
 
 def test_advanced_sliders(sliders):
     for slider in sliders:
@@ -68,7 +44,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     settings_label.pack(pady=10)
 
     # Bottom Buttons
-    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=detectEvents)
+    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: detectEventsPressed(sliders, advanced_sliders))
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)
