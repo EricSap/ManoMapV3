@@ -42,24 +42,24 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     title_label = ctk.CTkLabel(main_frame, text="Pattern Detection", font=("Arial", 20, "bold"))
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
+    # Top Buttons
+    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root))
+    button_select_input.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+
+    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
+    button_plot_data.grid(row=1, column=1, columnspan=3, padx=20, pady=10, sticky="ew")
+
     #Settings Frame
-    settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray")
-    settings_frame.grid(row=2, column=0, pady=20, padx=20, sticky="nsew")
+    settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
+    settings_frame.grid(row=2, column=0, columnspan=1, pady=20, padx=20, sticky="nsew")
     settings_frame_2, sliders = create_settings_frame(settings_frame)
 
     # Label for Settings frame
     settings_label = ctk.CTkLabel(settings_frame, text="Settings", font=("Arial", 14, "bold"))
     settings_label.pack(pady=10)
-    
-    # Top Buttons
-    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root))
-    button_select_input.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
-
-    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
-    button_plot_data.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
 
     # Advanced Settings Frame
-    advanced_settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray")
+    advanced_settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
     advanced_settings_frame.grid(row=2, column=1, columnspan=3, pady=20, padx=20, sticky="nsew")
     advanced_settings_frame_2, advanced_sliders = create_advanced_settings_frame(advanced_settings_frame)
 
@@ -69,7 +69,6 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
 
     # Bottom Buttons
     button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=detectEvents)
-
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)

@@ -4,7 +4,7 @@ import customtkinter as ctk
 import pandas as pd
 from manoutilsv2 import data_preperation
 from patternDetectionScreen.detectionv2 import find_contractions_from_patterns, find_patterns_from_values_dict
-
+import patternDetectionScreen.heatplot as heatplot
 
 def clear_screen(root):
     for widget in root.winfo_children():
