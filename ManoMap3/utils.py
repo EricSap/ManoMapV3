@@ -98,13 +98,10 @@ def showPlotPressed(sliders):
         global commentsDict
         thresholdVals = list(sliders[0].get())
         visible_sensors = list(sliders[1].get())
-        print("visible sensors: ",visible_sensors)
-        print("type; ",type(visible_sensors))
-        print("valuesdict len: ",len(valuesDict))
-        first_sensor = visible_sensors[0]
-        last_sensor = visible_sensors[1]
-        minThreshold = thresholdVals[0]
-        maxThreshold = thresholdVals[1]
+        first_sensor = int(visible_sensors[0])
+        last_sensor = int(visible_sensors[1])
+        minThreshold = int(thresholdVals[0])
+        maxThreshold = int(thresholdVals[1])
         colormap = "inferno"
         heatplot.showPlot(first_sensor, last_sensor, minThreshold, maxThreshold, differentialMode, valuesDict, commentsDict, colormap=colormap)
     except NameError:
