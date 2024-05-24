@@ -2,9 +2,10 @@ import os
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import pandas as pd
-from manoutilsv2 import data_preperation, CSVToDict
+from manoutilsv2 import data_preparation, CSVToDict
 from patternDetectionScreen.detectionv2 import find_contractions_from_patterns, find_patterns_from_values_dict
 from patternDetectionScreen import heatplot
+from patternDetectionScreen import signalplot
 
 global valuesDict
 
@@ -70,7 +71,7 @@ def detectEventsPressed(sliders, advanced_sliders):
         amountofOverlapped = int(advanced_sliders[1].get())
 
         #data preperation
-        filedata = data_preperation(valuesDict)
+        filedata = data_preparation(valuesDict)
 
         #return sensor values
         slidervals = list(sliders[1].get())
@@ -107,3 +108,19 @@ def showPlotPressed(sliders):
     except NameError:
         # messagebox.showinfo("Error", "Please select a file.")
         print("Please select a file.")
+
+def showSignalsPressed(sliders):
+    try:
+        global commentsDict
+        visible_sensors = list(sliders[1].get())
+        first_sensor = int(visible_sensors[0])
+        last_sensor = int(visible_sensors[1])
+        thresholdVals = list(sliders[0].get())
+        minThreshold = int(thresholdVals[0])
+        maxThreshold = int(thresholdVals[1])
+        colormap = "inferno"
+        global contractions
+        #opacity hardcoded for now
+        signalplot.show_combined_plot(data_preparation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=1, detected_events=contractions, exportDataXml = exportDataXml)
+    except NameError:
+        messagebox.showinfo("Error", "Please select a file.")

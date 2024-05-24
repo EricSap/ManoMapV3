@@ -167,7 +167,7 @@ def wiener_filter_dict(dict, window = 5):
         dict[key] = wiener(value,window)
     return transform_dict_per_sensor_to_dict_per_timeframe(dict)
 
-def data_preperation(dict):
+def data_preparation(dict):
     baselineRemoved = baseline_removal(dict)
     savitzky = savitzky_Golay_filter_dict(baselineRemoved)
     wieners = wiener_filter_dict(savitzky)
