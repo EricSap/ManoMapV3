@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed
+from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed, showSignalsPressed
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
@@ -50,7 +50,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)
     button_detect_events.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
 
-    button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=None)
+    button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=lambda: showSignalsPressed(sliders))
     button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
     button_export = ctk.CTkButton(main_frame, text="Export", command=None)
