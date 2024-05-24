@@ -30,7 +30,6 @@ def create_sensors_frame(root):
         
         # Call the update_value_label function with the initial values of the slider
         update_value_label((from_, to))
-
         sliders.append(slider)
 
     return sliders
