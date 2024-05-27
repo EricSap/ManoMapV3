@@ -22,7 +22,7 @@ def create_main_screen():
     button_a = ctk.CTkButton(button_frame, text="Pattern Detection", command=lambda: open_screen_for_pattern_detection(app, go_back, create_main_screen), width=100, height=75, font=("Arial",14, "bold"))
     button_a.grid(row=0, column=0, padx=20, pady=20)
 
-    button_b = ctk.CTkButton(button_frame, text="Export file to Excel", command=lambda: export_to_excel_screen(app, go_back, create_main_screen), width=100, height=75, font=("Arial", 14, "bold"))
+    button_b = ctk.CTkButton(button_frame, text="Data Analysis", command=lambda: export_to_excel_screen(app, go_back, create_main_screen), width=110, height=75, font=("Arial", 14, "bold"))
     button_b.grid(row=0, column=1, padx=20, pady=20)
 
     # main loop
