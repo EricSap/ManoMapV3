@@ -9,6 +9,8 @@ from patternDetectionScreen import signalplot
 
 global valuesDict
 
+global filename
+
 commentsDict = dict()
 contractions = []
 exportDataXml = []
@@ -47,7 +49,8 @@ def display_excel_filename(root):
 def display_txt_filename(root):
     global valuesDict
     file_path = import_txt_file()
-    if file_path and os.path.isfile(file_path):  
+    if file_path and os.path.isfile(file_path):
+        global filename
         filename = os.path.basename(file_path)
         label = ctk.CTkLabel(root, text="Selected Text File: " + filename, font=("Arial", 12))
         label.pack(pady=10)
@@ -124,3 +127,48 @@ def showSignalsPressed(sliders):
         signalplot.show_combined_plot(data_preparation(valuesDict), commentsDict, first_sensor, last_sensor, minThreshold, maxThreshold, colormap=colormap, opacity=1, detected_events=contractions, exportDataXml = exportDataXml)
     except NameError:
         messagebox.showinfo("Error", "Please select a file.")
+
+def exportToXML():
+        # also_export_a_txt()
+        try:
+            exportTitle = str(filename).split('.')[0] + "_sequences_data.txt"
+            print(exportTitle)
+        except NameError:
+            messagebox.showinfo("Error", "Please select a file.")
+
+        global exportDataXml
+        print("exportDataXml: ", exportDataXml)
+
+        XML = data_to_XML(exportDataXml)
+
+        with open(exportTitle, 'w') as outputfile:
+            outputfile.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
+            outputfile.write("\n")
+            outputfile.write('<sequences>')
+            outputfile.write("\n")
+            outputfile.write(XML)
+            outputfile.write("\n")
+            outputfile.write('</sequences>')
+        print("succesful export to XML")
+
+def data_to_XML(data):
+    sequencesTXT = ""
+    for contraction in data:
+        # print("\ncontraction: ", contraction)
+        channelValues= list(contraction.keys())
+        maxSampleValues = []
+        for sensor in contraction.values():
+            maxSampleValues.append(sensor['maxSample'])
+
+        startSample = str(int(min(maxSampleValues) * 10))
+        endSample = str(int(max(maxSampleValues) * 10))
+        startChannel = str(min(channelValues))
+        endChannel = str(max(channelValues))
+        sequenceHeader = '<sequence startSample="'+ startSample + '" endSample="' + endSample+ '" startChannel="' + startChannel + '" endChannel="' + endChannel + '">'
+        sequencesTXT+= sequenceHeader
+        for item in contraction:
+            point = '<range channel="' + str(item) + '" maxSample="'+  str(int(contraction[item]['maxSample'] * 10))+ '"/>'
+            sequencesTXT += "\n"
+            sequencesTXT += "\t" + point
+        sequencesTXT += "\n"+'</sequence>'
+    return sequencesTXT
