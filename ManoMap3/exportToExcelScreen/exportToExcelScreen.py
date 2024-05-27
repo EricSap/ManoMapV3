@@ -13,7 +13,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     main_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
     # Title Label
-    title_label = ctk.CTkLabel(main_frame, text="Data analysis", font=("Arial", 20, "bold"))
+    title_label = ctk.CTkLabel(main_frame, text="Data Analysis", font=("Arial", 20, "bold"))
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
     df = None
