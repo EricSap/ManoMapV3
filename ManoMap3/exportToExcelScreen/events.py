@@ -81,6 +81,7 @@ def create_event_interface(settings_frame):
     # Place Event Button
     placeCommentButton = ctk.CTkButton(settings_frame, text="Place Event", command=lambda: (placeComment(settings_frame), show_comments(settings_frame)))
     placeCommentButton.pack(pady=10, padx=10)
+    return hourText, minText, secText, commentText
 
 def get_time_text():
     # Get the content of each Entry widget and strip any extra whitespace
@@ -113,3 +114,4 @@ def show_comments(settings_frame):
 
         delete_button = ctk.CTkButton(comment_frame, text="Delete", command=lambda k=key, lbl=timeAndCommentText, sf=settings_frame: delete_comment(k, lbl, sf))
         delete_button.pack(side='right')
+    return commentsDict
