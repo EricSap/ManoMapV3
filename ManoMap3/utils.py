@@ -96,6 +96,7 @@ def detectEventsPressed(sliders, advanced_sliders):
 def clearEvents():
         global contractions
         contractions = []
+        messagebox.showinfo("detection", "Events cleared!")
 
 def showPlotPressed(sliders):
     try:

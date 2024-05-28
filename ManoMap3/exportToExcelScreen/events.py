@@ -50,7 +50,7 @@ def create_event_interface(settings_frame):
 
     # Comment Entry
     commentText = ctk.CTkEntry(timecommentBundle, width=300, placeholder_text="Event")
-    commentText.pack(padx=2)
+    commentText.pack(padx=2, pady=5)
 
     # Time Label
     timeText = ctk.StringVar()
@@ -58,24 +58,28 @@ def create_event_interface(settings_frame):
     timeText.set("Time")
     time_label.pack()
 
+    # Frame to center time entry fields
+    timeEntryFrame = ctk.CTkFrame(timecommentBundle)
+    timeEntryFrame.pack(pady=5)
+
     # Hour Entry
-    hourText = ctk.CTkEntry(timecommentBundle, width=40, placeholder_text="HH")
+    hourText = ctk.CTkEntry(timeEntryFrame, width=40, placeholder_text="HH")
     hourText.pack(side=ctk.LEFT, padx=2)
 
     # Separator
-    colon1 = ctk.CTkLabel(timecommentBundle, text=":")
+    colon1 = ctk.CTkLabel(timeEntryFrame, text=":")
     colon1.pack(side=ctk.LEFT, padx=2)
 
     # Minute Entry
-    minText = ctk.CTkEntry(timecommentBundle, width=40, placeholder_text="MM")
+    minText = ctk.CTkEntry(timeEntryFrame, width=40, placeholder_text="MM")
     minText.pack(side=ctk.LEFT, padx=2)
 
     # Separator
-    colon2 = ctk.CTkLabel(timecommentBundle, text=":")
+    colon2 = ctk.CTkLabel(timeEntryFrame, text=":")
     colon2.pack(side=ctk.LEFT, padx=2)
 
     # Second Entry
-    secText = ctk.CTkEntry(timecommentBundle, width=40, placeholder_text="SS")
+    secText = ctk.CTkEntry(timeEntryFrame, width=40, placeholder_text="SS")
     secText.pack(side=ctk.LEFT, padx=2)
 
     # Place Event Button
@@ -107,11 +111,11 @@ def show_comments(settings_frame):
     # Show comments
     for key, value in commentsDict.items():
         comment_frame = ctk.CTkFrame(settings_frame.comments_frame)
-        comment_frame.pack(pady=5, fill='x')
+        comment_frame.pack(pady=10, padx=10, fill='x')
 
-        timeAndCommentText = ctk.CTkLabel(comment_frame, text=f"Time: {convertTimeToText(key)} - Comment: {value}")
-        timeAndCommentText.pack(side='left')
+        timeAndCommentText = ctk.CTkLabel(comment_frame, text=f"Time: {convertTimeToText(key)} - Event: {value}")
+        timeAndCommentText.pack(side='left', padx=(10, 5), pady=5)
 
         delete_button = ctk.CTkButton(comment_frame, text="Delete", command=lambda k=key, lbl=timeAndCommentText, sf=settings_frame: delete_comment(k, lbl, sf))
-        delete_button.pack(side='right')
+        delete_button.pack(side='right', padx=(5, 10), pady=5)
     return commentsDict
