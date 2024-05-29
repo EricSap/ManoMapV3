@@ -2,7 +2,7 @@ import os
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import pandas as pd
-from manoutilsv2 import data_preparation, CSVToDict
+from manoutilsv2 import data_preparation, CSVToDict, get_granularity_factor
 from patternDetectionScreen.detectionv2 import find_contractions_from_patterns, find_patterns_from_values_dict
 from patternDetectionScreen import heatplot
 from patternDetectionScreen import signalplot
@@ -129,7 +129,7 @@ def showSignalsPressed(sliders):
     except NameError:
         messagebox.showinfo("Error", "Please select a file.")
 
-def exportToXML():
+def exportToXML(advanced_sliders):
         # also_export_a_txt()
         try:
             exportTitle = str(filename).split('.')[0] + "_sequences_data.txt"
@@ -140,7 +140,7 @@ def exportToXML():
         global exportDataXml
         print("exportDataXml: ", exportDataXml)
 
-        XML = data_to_XML(exportDataXml)
+        XML = data_to_XML(exportDataXml, advanced_sliders)
 
         with open(exportTitle, 'w') as outputfile:
             outputfile.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
@@ -152,10 +152,16 @@ def exportToXML():
             outputfile.write('</sequences>')
         print("succesful export to XML")
 
-def data_to_XML(data):
+def data_to_XML(data, advanced_sliders):
     sequencesTXT = ""
+    distance = advanced_sliders[0].get() # in mm (?)
+    print("distance", distance)
+    with open('data.txt', 'w') as outputfile:
+        outputfile.write(str(data))
+    with open('contractions.txt', 'w') as outputfile:
+        outputfile.write(str(contractions))
+    index = 0
     for contraction in data:
-        # print("\ncontraction: ", contraction)
         channelValues= list(contraction.keys())
         maxSampleValues = []
         for sensor in contraction.values():
@@ -165,11 +171,23 @@ def data_to_XML(data):
         endSample = str(int(max(maxSampleValues) * 10))
         startChannel = str(min(channelValues))
         endChannel = str(max(channelValues))
-        sequenceHeader = '<sequence startSample="'+ startSample + '" endSample="' + endSample+ '" startChannel="' + startChannel + '" endChannel="' + endChannel + '">'
+        gran = get_granularity_factor()
+        time = gran * len(contractions[index]['sequences'])
+        startSensor = contractions[index]['sequences'][0][0][0]
+        endSensor = contractions[index]['sequences'][-1][-1][0]
+        # last sensor - first * distance between each sensor = total distance, time is in decaseconds => *10, distance in mm => *10
+        velocity = (endSensor - startSensor) * distance / time * 100
+        dir = 'Antegrade'
+        if velocity < 0:
+            dir = 'Retrograde'
+
+        sequenceHeader = '<sequence dir="' + dir + '" vel="' + str(velocity) + '" startSample="'+ startSample + '" endSample="' + endSample+ '" startChannel="' + startChannel + '" endChannel="' + endChannel + '">'
         sequencesTXT+= sequenceHeader
         for item in contraction:
             point = '<range channel="' + str(item) + '" maxSample="'+  str(int(contraction[item]['maxSample'] * 10))+ '"/>'
             sequencesTXT += "\n"
             sequencesTXT += "\t" + point
         sequencesTXT += "\n"+'</sequence>'
+        index += 1
+
     return sequencesTXT

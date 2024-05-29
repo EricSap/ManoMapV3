@@ -53,7 +53,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=lambda: showSignalsPressed(sliders))
     button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
-    button_export = ctk.CTkButton(main_frame, text="Export", command=exportToXML)
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML(advanced_sliders))
     button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
