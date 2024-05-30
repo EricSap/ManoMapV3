@@ -34,7 +34,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     sensors_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray")
     sensors_frame.grid(row=2, column=0, pady=20, padx=20, sticky="nsew")
     # this must be updated later on to know which slider contains what.
-    sliders = create_sensors_frame(sensors_frame)
+    sliders, settings_sliders = create_sensors_frame(sensors_frame)
 
     # Label for Sensor frame
     sensors_label = ctk.CTkLabel(sensors_frame, text="Sensors", font=("Arial", 14, "bold"))
