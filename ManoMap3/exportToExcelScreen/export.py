@@ -3,7 +3,7 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Alignment, PatternFill
 
-def exportToXlsx(data, file_name, sliders, events):
+def exportToXlsx(data, file_name, sliders, events, settings_sliders):
     # Split the file path into the base name and extension
     base_name, ext = file_name.rsplit('.', 1)
 
@@ -22,7 +22,7 @@ def exportToXlsx(data, file_name, sliders, events):
             hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
             minute, second = divmod(remainder, 60)  # Calculate minutes and seconds
             addEventNameAtGivenTime(new_file_name, hour, minute, second, event_name)
-        hey = assignSectionsBasedOnStartSection(new_file_name, sliders, event_names)
+        assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders)
         print(f"Data successfully exported to {new_file_name}")
     except Exception as e:
         print(f"Error exporting data to Excel: {e}")
@@ -118,7 +118,7 @@ def insertEmptyRows(file_name, amount):
     
     wb.save(file_name)
 
-def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
+def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_sliders):
     # Load the workbook and select the active sheet
     wb = load_workbook(file_name)
     ws = wb.active
@@ -135,12 +135,16 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
 
     # Get the slider values
     sliders = getSliderValues(sliders)
+    distance_between_sensors = int(round(settings_sliders[0].get()))
 
     counters = {}
+    length_counters = {}
 
     counters.update({"Post-Wake": {}})
+    length_counters.update({"Post-Wake": {}})
     for event_name in event_names:
         counters.update({event_name: {}})
+        length_counters.update({event_name: {}})
 
     counter = {
         "Ascending": 0,
@@ -148,13 +152,30 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
         "Descending": 0,
         "Sigmoid": 0,
         "Rectum": 0,
-        "Sigmoid tot in Rectum": 0
+        "Sigmoid tot in Rectum": 0,
+    }
+
+    length_counter = {
+        "aantal long s": 0,
+        "aantal short s": 0,
+        "aantal long r": 0,
+        "aantal short r": 0,
+        "aantal long a": 0,
+        "aantal short a": 0,
     }
 
     # Iterate over each row starting from row 22
     for row in range(22, ws.max_row + 1):
+
+        pattern = ws.cell(row=row, column=6).value
+        length = ws.cell(row=row, column=10).value
+        if(isinstance(length, int)):
+            pattern_type = "long" if distance_between_sensors * length > 100 else "short"
+            length_counter[f"aantal {pattern_type} {pattern}"] += 1
+
         for col in range(12, ws.max_column + 1):  # Adjust the starting column index if needed
             cell_value = ws.cell(row=row, column=col).value
+
             if isinstance(cell_value, (int, float)) and cell_value > 0:
                 # Determine the section based on the column index and slider ranges
                 for i, (start, end) in enumerate(sliders):
@@ -182,6 +203,10 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
                 if counters[event] == {}:
                     counters[event] = counter
                     break
+            for event in length_counters.keys():
+                if length_counters[event] == {}:
+                    length_counters[event] = length_counter
+                    break
             counter = {
                 "Ascending": 0,
                 "Transverse": 0,
@@ -190,12 +215,29 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
                 "Rectum": 0,
                 "Sigmoid tot in Rectum": 0
             }
+            length_counter = {
+                "aantal long s": 0,
+                "aantal short s": 0,
+                "aantal long r": 0,
+                "aantal short r": 0,
+                "aantal long a": 0,
+                "aantal short a": 0,
+            }
 
-    #start at column 19 row 3 and add the keys going down
+    #Section names added to the left of table
     row = 3
-    for event in counter.keys():
-        ws.cell(row=row, column=19, value=event)
+    for section in counter.keys():
+        ws.cell(row=row, column=19, value=section)
         row += 1
+    row += 1
+    #Pattern types (eg. short s) added to the left of table
+    for pattern in length_counter.keys():
+        ws.cell(row=row, column=19, value=pattern)
+        fill = PatternFill(start_color="F4B084", end_color="F4B084", fill_type="solid")
+        ws.cell(row=row, column=19).fill = fill
+        row += 1
+    
+    #Fill in the counters
     column = 20
     for (event,value) in counters.items():
         row = 2
@@ -207,6 +249,16 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
             ws.cell(row=row, column=column, value=element)
             row += 1
         column += 1
+    
+    #Fill in the section counters
+    column = 20
+    for (event,value) in length_counters.items():
+        row = 10
+        for pattern in value.values():
+            ws.cell(row=row, column=column, value=pattern)
+            row += 1
+        column += 1
+
     # Save the workbook
     wb.save(file_name)
     return counters
