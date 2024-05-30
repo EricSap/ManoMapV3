@@ -5,7 +5,10 @@ from exportToExcelScreen.events import create_event_interface, show_comments
 from exportToExcelScreen.sensors import create_sensors_frame
 from exportToExcelScreen.importFile import select_input_file
 
+file_selected = False
+
 def export_to_excel_screen(root, go_back_func, create_main_screen_func):
+    global file_selected
     clear_screen(root)
 
     # Create main frame for layout
@@ -20,8 +23,9 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     file_name = None
 
     def select_file_and_update_label():
+        global file_selected
         nonlocal df, file_name
-        df, file_name = select_input_file(root, file_label)
+        df, file_name = select_input_file(root, file_label, button_export)
 
     # Top Buttons
     button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: select_file_and_update_label())
@@ -52,7 +56,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     
 
     # Bottom Buttons
-    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXlsx(df, file_name, sliders, events, settings_sliders))
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXlsx(df, file_name, sliders, events, settings_sliders, state='disabled'))
     button_export.grid(row=3, column=0, columnspan=3, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))

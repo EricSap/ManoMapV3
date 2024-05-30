@@ -3,11 +3,14 @@ from utils import display_txt_filename, clear_screen, detectEventsPressed, clear
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
+file_selected = False
+
 def test_advanced_sliders(sliders):
     for slider in sliders:
         print(int(slider.get()))
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
+    global file_selected
     clear_screen(root)
 
     # Create main frame for layout
@@ -19,7 +22,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
     # Top Buttons
-    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root))
+    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root, button_export))
     button_select_input.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
 
     button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
@@ -53,7 +56,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=lambda: showSignalsPressed(sliders))
     button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
-    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML(advanced_sliders))
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML(advanced_sliders), state='disabled')
     button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
