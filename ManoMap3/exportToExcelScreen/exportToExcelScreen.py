@@ -56,7 +56,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     
 
     # Bottom Buttons
-    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXlsx(df, file_name, sliders, events), state='disabled')
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXlsx(df, file_name, sliders, events, settings_sliders, state='disabled'))
     button_export.grid(row=3, column=0, columnspan=3, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
