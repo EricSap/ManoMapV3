@@ -1,7 +1,10 @@
 import pandas as pd
 from tkinter import filedialog
 
-def select_input_file(root, label):
+global file_selected
+
+def select_input_file(root, label, button_export):
+    global file_selected
     # Open file dialog and ask user to select an Excel file
     file_path = filedialog.askopenfilename(
         filetypes=[("Excel files", "*.xlsx;*.xls")],
@@ -20,6 +23,8 @@ def select_input_file(root, label):
         # Display the selected file name
         label.configure(text=f"Selected File: {file_path.split('/')[-1]}")
         file_name = file_path.split('/')[-1]
+        file_selected = True
+        button_export.configure(state='normal')
         return df, file_name
     except Exception as e:
         print(f"Error reading file: {e}")

@@ -25,7 +25,7 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     def select_file_and_update_label():
         global file_selected
         nonlocal df, file_name
-        df, file_name = select_input_file(root, file_label)
+        df, file_name = select_input_file(root, file_label, button_export)
 
     # Top Buttons
     button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: select_file_and_update_label())
