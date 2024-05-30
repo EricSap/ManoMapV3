@@ -8,7 +8,7 @@ def create_settings_frame(root):
 
     # Format for each setting: (label_text, from_, to)
     settings = [
-        ("Threshhold:", 0, 500),
+        ("Threshold:", 0, 500),
         ("Visible sensors:", 1, 40)
     ]
 
@@ -16,22 +16,27 @@ def create_settings_frame(root):
 
     for i, (label_text, from_, to) in enumerate(settings):
         label = ctk.CTkLabel(settings_frame, text=label_text)
-        label.grid(row=i, column=0, padx=5, pady=5)
+        label.grid(row=i, column=0, padx=3, pady=5)
 
-        value_label = ctk.CTkLabel(settings_frame, text="")
-        value_label.grid(row=i, column=2, padx=5, pady=5)
+        value_label1 = ctk.CTkLabel(settings_frame, text="")
+        value_label1.grid(row=i, column=1, padx=3, pady=5)
 
-        def update_value_label(value, label=value_label):
-            label.configure(text=tuple(int(round(x, 0)) for x in value))
+        value_label2 = ctk.CTkLabel(settings_frame, text="")
+        value_label2.grid(row=i, column=3, padx=5, pady=5)
+
+        def update_value_label(value, label1=value_label1, label2=value_label2):
+            label1.configure(text=f"{int(round(value[0]))}")
+            label2.configure(text=f"{int(round(value[1]))}")
         
-        slider = CTkRangeSlider(settings_frame, from_=from_, to=to, command=update_value_label)
-        slider.grid(row=i, column=1, padx=5, pady=5, sticky="ew")
+        slider = CTkRangeSlider(settings_frame, from_=from_, to=to, command=update_value_label) 
+        slider.grid(row=i, column=2, padx=5, pady=5, sticky="ew")
                 
         sliders.append(slider)
 
-        # Call the update_value_label function with the initial values of the slider
+        # Call the update_value_labels function with the initial values of the slider
         update_value_label((from_, to))
     return settings_frame, sliders
+
 
 def create_advanced_settings_frame(root):
     advanced_settings_frame = ctk.CTkFrame(root)
