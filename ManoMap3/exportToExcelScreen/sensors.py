@@ -16,6 +16,11 @@ def create_sensors_frame(root):
     sliders = []
     value_labels = []
 
+    # Format for each setting: (label_text, from_, to, default_value)
+    settings = [
+        ("Distance between sensors (mm)", 1, 200, 25),
+    ]
+
     def update_value_label(value, i):
         start, end = int(round(value[0], 0)), int(round(value[1], 0))
         value_labels[i][0].configure(text=f"{start}")
@@ -59,4 +64,20 @@ def create_sensors_frame(root):
         # Call the update_value_label function with the initial values of the slider
         update_value_label((slider.get()[0], slider.get()[1]), i)
 
-    return sliders
+    settings_sliders = []
+    for i, (label_text, from_, to, default_value) in enumerate(settings):
+        row_index = i + len(colonregions)
+        label = ctk.CTkLabel(sensors_frame, text=label_text)
+        label.grid(row=row_index, column=0, padx=5, pady=5)
+
+        value = ctk.IntVar()
+        value.set(default_value)
+        slider = ctk.CTkSlider(sensors_frame, from_=from_, to=to, variable=value)
+        slider.grid(row=row_index, column=2, padx=5, pady=5, sticky="ew")
+        
+        settings_sliders.append(slider)
+
+        value_label = ctk.CTkLabel(sensors_frame, textvariable=value)
+        value_label.grid(row=row_index, column=1, padx=5, pady=5)
+
+    return sliders, settings_sliders
