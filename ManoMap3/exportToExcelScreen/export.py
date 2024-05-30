@@ -17,8 +17,6 @@ def exportToXlsx(data, file_name, sliders, events):
         mergeAndColorCells(new_file_name, sliders)
         event_names = []
         for time, event_name in events.items():
-            print('tijd: ', time)
-            print('event: ', event_name)
             event_names.append(event_name)
             total_seconds = time // 10  # Convert deciseconds to seconds
             hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
@@ -203,13 +201,10 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
         fill = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
         ws.cell(row=row, column=column).fill = fill
         row += 1
-        print("value: ", value)
         for element in value.values():
-            print('element: ', element)
             ws.cell(row=row, column=column, value=element)
             row += 1
         column += 1
     # Save the workbook
     wb.save(file_name)
-    print(counters)
     return counters
