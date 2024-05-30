@@ -175,10 +175,12 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
         #check if the cell value is a string instead of an int, if so add counter to counters (event name as key and counter as value) and reset each value to 0
         next_row = ws.cell(row=row + 1, column=1).value
         if isinstance(ws.cell(row=row, column=1).value, str) or next_row == None:
+            #subtract the "Sigmoid" with "Sigmoid tot in Rectum" to get the correct amount of Sigmoid
+            counter["Sigmoid"] -= counter["Sigmoid tot in Rectum"]
             # add the counter to the first empty value from a key in the counters dictionary
-            for key in counters.keys():
-                if counters[key] == {}:
-                    counters[key] = counter
+            for event in counters.keys():
+                if counters[event] == {}:
+                    counters[event] = counter
                     break
             counter = {
                 "Ascending": 0,
@@ -191,13 +193,13 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names):
 
     #start at column 19 row 3 and add the keys going down
     row = 3
-    for key in counter.keys():
-        ws.cell(row=row, column=19, value=key)
+    for event in counter.keys():
+        ws.cell(row=row, column=19, value=event)
         row += 1
     column = 20
-    for (key,value) in counters.items():
+    for (event,value) in counters.items():
         row = 2
-        ws.cell(row=row, column=column, value=key)
+        ws.cell(row=row, column=column, value=event)
         fill = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
         ws.cell(row=row, column=column).fill = fill
         row += 1
