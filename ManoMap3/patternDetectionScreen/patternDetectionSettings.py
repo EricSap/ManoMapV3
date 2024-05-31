@@ -35,7 +35,14 @@ def create_settings_frame(root):
 
         # Call the update_value_labels function with the initial values of the slider
         update_value_label((from_, to))
-    return settings_frame, sliders
+
+    # Create an input field for broken sensors
+    broken_sensor_label = ctk.CTkLabel(settings_frame, text="Broken sensor:")
+    broken_sensor_label.grid(row=len(settings), column=0, padx=3, pady=5)
+
+    broken_sensor_entry = ctk.CTkEntry(settings_frame)
+    broken_sensor_entry.grid(row=len(settings), column=1, columnspan=3, padx=5, pady=5, sticky="ew")
+    return settings_frame, sliders, broken_sensor_entry
 
 
 def create_advanced_settings_frame(root):
