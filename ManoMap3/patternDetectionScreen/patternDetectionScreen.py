@@ -1,13 +1,9 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed, showSignalsPressed, exportToXML
+from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed, showSignalsPressed, exportToXML, approximate_broken_sensor
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
 file_selected = False
-
-def test_advanced_sliders(sliders):
-    for slider in sliders:
-        print(int(slider.get()))
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     global file_selected
@@ -31,7 +27,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     #Settings Frame
     settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
     settings_frame.grid(row=2, column=0, columnspan=1, pady=20, padx=20, sticky="nsew")
-    settings_frame_2, sliders = create_settings_frame(settings_frame)
+    settings_frame_2, sliders, broken_sensor_entry = create_settings_frame(settings_frame)
 
     # Label for Settings frame
     settings_label = ctk.CTkLabel(settings_frame, text="Settings", font=("Arial", 14, "bold"))
@@ -61,6 +57,9 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
     button_back.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
+
+    button_approximate = ctk.CTkButton(main_frame, text="Approximate broken sensors", command=lambda: approximate_broken_sensor(broken_sensor_entry))
+    button_approximate.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
 
     # Configure grid weights for responsiveness
     main_frame.grid_columnconfigure(0, weight=1)

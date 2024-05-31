@@ -6,10 +6,12 @@ from manoutilsv2 import data_preparation, CSVToDict, get_granularity_factor
 from patternDetectionScreen.detectionv2 import find_contractions_from_patterns, find_patterns_from_values_dict
 from patternDetectionScreen import heatplot
 from patternDetectionScreen import signalplot
+import numpy as np
 
 global valuesDict
 global filename
-global file_selected 
+global file_selected
+global file_path
 
 commentsDict = dict()
 contractions = []
@@ -51,7 +53,8 @@ def display_excel_filename(root, button_export):
 
 def display_txt_filename(root, button_export):
     global valuesDict
-    global file_selected 
+    global file_selected
+    global file_path
     file_path = import_txt_file()
     if file_path and os.path.isfile(file_path):
         global filename
@@ -197,3 +200,35 @@ def data_to_XML(data, advanced_sliders):
         index += 1
 
     return sequencesTXT
+
+def approximate_broken_sensor(broken_sensor_entry):
+     # Read the data from the file
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    
+    # Initialize an empty list to hold the processed data
+    data = []
+    
+    # Process each line in the file
+    for line in lines:
+        if line.strip():  # Skip any empty lines
+            parts = line.split()
+            time = float(parts[0])  # Convert the first column to float for time
+            sensors = list(map(int, parts[1:]))  # Convert the rest to integers for sensor values
+            data.append([time] + sensors)
+    
+    # Convert the list to a numpy array for easier manipulation
+    data = np.array(data, dtype=object)
+    
+    # Identify the index for the broken sensor
+    broken_sensor_index = int(broken_sensor_entry.get())
+    print("broken_sensor_index: ", broken_sensor_index)
+    
+    # Replace the broken sensor values with the average of the previous and next sensor values
+    for row in data:
+        row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+    
+    # Save the modified data back to the file or return it
+    with open(filename.split('.txt')[0] + '_approximated.txt', 'w') as file:
+        for row in data:
+            file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
