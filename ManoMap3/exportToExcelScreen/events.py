@@ -26,7 +26,8 @@ def placeComment(settings_frame):
     comment = commentText.get()
     if validateTime(time):
         commentsDict[convertTime(time)] = comment
-        show_info_popup("Event", f"Event placed at {time}", settings_frame)
+        # show_info_popup("Event", f"Event placed at {time}", settings_frame)
+        # Pop up comment eruit gehaald
     else:
         show_info_popup("Error", "You must enter the right format of time (HH:MM:SS)", settings_frame)
     commentText.delete(0, ctk.END)

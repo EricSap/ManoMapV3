@@ -3,10 +3,8 @@ from utils import display_txt_filename, clear_screen, detectEventsPressed, clear
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
-file_selected = False
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
-    global file_selected
     clear_screen(root)
 
     # Create main frame for layout
@@ -18,11 +16,14 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
     # Top Buttons
-    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root, button_export))
+    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root, button_export, file_label))
     button_select_input.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
 
-    button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
-    button_plot_data.grid(row=1, column=1, columnspan=3, padx=20, pady=10, sticky="ew")
+    file_label = ctk.CTkLabel(main_frame, text="No file selected", font=("Arial", 12))
+    file_label.grid(row=1, column=1, columnspan=3, padx=10, pady=10, sticky="ew")
+
+    # button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
+    # button_plot_data.grid(row=1, column=1, columnspan=3, padx=20, pady=10, sticky="ew")
 
     #Settings Frame
     settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
