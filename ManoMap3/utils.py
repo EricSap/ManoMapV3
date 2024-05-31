@@ -33,13 +33,11 @@ def import_txt_file():
 
 def toggle_mode():
     current_mode = ctk.get_appearance_mode()
-    print("Current mode is", current_mode)
     if current_mode == "Light":
         new_mode = "dark"
     else:
         new_mode = "Light"
     ctk.set_appearance_mode(new_mode)
-    print("Changed mode to", new_mode)
 
 
 
