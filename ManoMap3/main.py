@@ -2,7 +2,7 @@ import customtkinter as ctk
 from exportToExcelScreen.exportToExcelScreen import export_to_excel_screen
 from patternDetectionScreen.patternDetectionScreen import open_screen_for_pattern_detection
 
-from utils import go_back
+from utils import go_back, toggle_mode
 
 def create_main_screen():
     app = ctk.CTk()
@@ -24,6 +24,10 @@ def create_main_screen():
 
     button_b = ctk.CTkButton(button_frame, text="Data Analysis", command=lambda: export_to_excel_screen(app, go_back, create_main_screen), width=110, height=75, font=("Arial", 14, "bold"))
     button_b.grid(row=0, column=1, padx=20, pady=20)
+
+    # Mode toggle button
+    toggle_button = ctk.CTkButton(button_frame, text="Toggle Light/Dark Mode", command=toggle_mode, width=200, height=50, font=("Arial", 14, "bold"))
+    toggle_button.grid(row=1, column=0, columnspan=2, pady=20)
 
     # main loop
     app.mainloop()
