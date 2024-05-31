@@ -3,14 +3,12 @@ from utils import display_txt_filename, clear_screen, detectEventsPressed, clear
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
 
-file_selected = False
 
 def test_advanced_sliders(sliders):
     for slider in sliders:
         print(int(slider.get()))
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
-    global file_selected
     clear_screen(root)
 
     # Create main frame for layout
