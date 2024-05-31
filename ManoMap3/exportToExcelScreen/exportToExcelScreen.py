@@ -5,10 +5,8 @@ from exportToExcelScreen.events import create_event_interface, show_comments
 from exportToExcelScreen.sensors import create_sensors_frame
 from exportToExcelScreen.importFile import select_input_file
 
-file_selected = False
 
 def export_to_excel_screen(root, go_back_func, create_main_screen_func):
-    global file_selected
     clear_screen(root)
 
     # Create main frame for layout
@@ -23,7 +21,6 @@ def export_to_excel_screen(root, go_back_func, create_main_screen_func):
     file_name = None
 
     def select_file_and_update_label():
-        global file_selected
         nonlocal df, file_name
         df, file_name = select_input_file(root, file_label, button_export)
 

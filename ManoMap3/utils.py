@@ -9,7 +9,6 @@ from patternDetectionScreen import signalplot
 
 global valuesDict
 global filename
-global file_selected 
 
 commentsDict = dict()
 contractions = []
@@ -34,7 +33,6 @@ def import_txt_file():
 
 def display_excel_filename(root, button_export):
     global valuesDict
-    global file_selected
     file_path = import_excel_file()
     if file_path and os.path.isfile(file_path):  # Check if file_path is not empty and is a valid file
         filename = os.path.basename(file_path)
@@ -42,30 +40,23 @@ def display_excel_filename(root, button_export):
         label.pack(pady=10)
         try:
             valuesDict = CSVToDict(file_path)
-            file_selected = True
             button_export.configure(state='normal')
         except:
             print("Error converting to Dict")
     else:
         print("No file selected.")
 
-def display_txt_filename(root, button_export):
+def display_txt_filename(root, button_export, file_label):
     global valuesDict
-    global file_selected 
     file_path = import_txt_file()
     if file_path and os.path.isfile(file_path):
         global filename
         filename = os.path.basename(file_path)
-        label = ctk.CTkLabel(root, text="Selected Text File: " + filename, font=("Arial", 12))
-        label.pack(pady=10)
+        file_label.configure(text="Selected Text File: " + filename, font=("Arial", 12))
         valuesDict = CSVToDict(file_path)
-        file_selected = True
         button_export.configure(state='normal')
-        #print(valuesDict)
-        # try:
-        # except:
-        #     print("Error converting to Dict")
     else:
+        file_label.configure(text="No file selected")
         print("No file selected.")
 
 def detectEventsPressed(sliders, advanced_sliders):
