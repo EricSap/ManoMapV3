@@ -34,6 +34,16 @@ def import_txt_file():
     file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
     return file_path
 
+def toggle_mode():
+    current_mode = ctk.get_appearance_mode()
+    if current_mode == "Light":
+        new_mode = "dark"
+    else:
+        new_mode = "Light"
+    ctk.set_appearance_mode(new_mode)
+
+
+
 def display_excel_filename(root, button_export):
     global valuesDict
     file_path = import_excel_file()
