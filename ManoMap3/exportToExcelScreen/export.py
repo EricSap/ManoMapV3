@@ -182,10 +182,8 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
             pattern_type = "long" if distance_between_sensors * length > 100 else "short"
             length_counter[f"aantal {pattern_type} {pattern}"] += 1
 
-        row_values = []
         for col in range(12, ws.max_column + 1):  # Adjust the starting column index if needed
             cell_value = ws.cell(row=row, column=col).value
-            row_values.append(ws.cell(row=row, column=col).value)
 
             if isinstance(cell_value, (int, float)) and cell_value > 0:
                 # Determine the section based on the column index and slider ranges
