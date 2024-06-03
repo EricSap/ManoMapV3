@@ -14,21 +14,21 @@ def exportToXlsx(data, file_name, sliders, events, settings_sliders):
     new_file_name = f"{base_name}_analysis.xlsx"
     
     # Write the DataFrame to an Excel file
-    # try:
-    data.to_excel(new_file_name, index=False)
-    insertEmptyRows(new_file_name, 7)
-    mergeAndColorCells(new_file_name, sliders)
-    event_names = []
-    for time, event_name in events.items():
-        event_names.append(event_name)
-        total_seconds = time // 10  # Convert deciseconds to seconds
-        hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
-        minute, second = divmod(remainder, 60)  # Calculate minutes and seconds
-        addEventNameAtGivenTime(new_file_name, hour, minute, second, event_name)
-    assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders)
-    print(f"Data successfully exported to {new_file_name}")
-    # except Exception as e:
-    #     print(f"Error exporting data to Excel: {e}")
+    try:
+        data.to_excel(new_file_name, index=False)
+        insertEmptyRows(new_file_name, 7)
+        mergeAndColorCells(new_file_name, sliders)
+        event_names = []
+        for time, event_name in events.items():
+            event_names.append(event_name)
+            total_seconds = time // 10  # Convert deciseconds to seconds
+            hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
+            minute, second = divmod(remainder, 60)  # Calculate minutes and seconds
+            addEventNameAtGivenTime(new_file_name, hour, minute, second, event_name)
+        assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders)
+        print(f"Data successfully exported to {new_file_name}")
+    except Exception as e:
+        print(f"Error exporting data to Excel: {e}")
 
 def getSliderValues(sliders):
     list_with_slider_tuples = []
