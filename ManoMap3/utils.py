@@ -226,7 +226,6 @@ def approximate_broken_sensor(broken_sensor_entry):
     
     # Identify the index for the broken sensor
     broken_sensor_index = int(broken_sensor_entry.get())
-    print("broken_sensor_index: ", broken_sensor_index)
     
     # Replace the broken sensor values with the average of the previous and next sensor values
     for row in data:

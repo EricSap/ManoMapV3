@@ -3,6 +3,9 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Alignment, PatternFill
 
+global EVENT_COLOR
+EVENT_COLOR = "F0FC5A"
+
 def exportToXlsx(data, file_name, sliders, events, settings_sliders):
     # Split the file path into the base name and extension
     base_name, ext = file_name.rsplit('.', 1)
@@ -98,7 +101,7 @@ def addEventNameAtGivenTime(file_name, hour, minute, second, event_name):
     
     for col in range(1, 11):
         ws.cell(row=insertion_row, column=col, value=event_name)
-        ws.cell(row=insertion_row, column=col).fill = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
+        ws.cell(row=insertion_row, column=col).fill = PatternFill(start_color=EVENT_COLOR, end_color=EVENT_COLOR, fill_type="solid")
     # Fill in the event details
     # ws.cell(row=insertion_row, column=1, value=insertion_row - 1)
     ws.cell(row=insertion_row, column=2, value=hour)
@@ -130,7 +133,11 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         "Transverse": "BDD7EE",
         "Descending": "F8CBAD",
         "Sigmoid": "D9D9D9",
-        "Rectum": "B1A0C7"
+        "Rectum": "B1A0C7",
+        "Ascending tot in Rectum": "81BA5A",
+        "Transverse tot in Rectum": "81B2DF",
+        "Descending tot in Rectum": "F2A16A",
+        "Sigmoid tot in Rectum": "BEBEBE"
     }
 
     # Get the slider values
@@ -152,6 +159,9 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         "Descending": 0,
         "Sigmoid": 0,
         "Rectum": 0,
+        "Ascending tot in Rectum": 0,
+        "Transverse tot in Rectum": 0,
+        "Descending tot in Rectum": 0,
         "Sigmoid tot in Rectum": 0,
     }
 
@@ -166,7 +176,6 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
 
     # Iterate over each row starting from row 22
     for row in range(22, ws.max_row + 1):
-
         pattern = ws.cell(row=row, column=6).value
         length = ws.cell(row=row, column=10).value
         if(isinstance(length, int)):
@@ -178,13 +187,16 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
 
             if isinstance(cell_value, (int, float)) and cell_value > 0:
                 # Determine the section based on the column index and slider ranges
+                for i, (start, end) in enumerate(sliders[:-1]):
+                    section = sections[i]
+                    rectum_start = sliders[4][0]
+                    if(ws.cell(row=row, column=col).value != None and start + 11 <= col <= end + 11):
+                        if all(ws.cell(row=row, column=col2).value != None for col2 in range(col,  rectum_start + 12)):
+                            counter.update({f'{section} tot in Rectum': counter[f'{section} tot in Rectum'] + 1})
+                            break
+                        
+                    
                 for i, (start, end) in enumerate(sliders):
-                    #if end of sigmoid AND start of rectum have a value, color the 11th column grey like the sigmoid section
-                    if i == 3 and ws.cell(row=row, column=end+11).value != None and ws.cell(row=row, column=end+12).value != None:
-                        fill = PatternFill(start_color=colors["Sigmoid"], end_color=colors["Sigmoid"], fill_type="solid")
-                        ws.cell(row=row, column=11).fill = fill
-                        counter.update({"Sigmoid tot in Rectum": counter["Sigmoid tot in Rectum"] + 1})
-
                     if start + 11 <= col <= end + 11:
                         section = sections[i]
                         counter.update({section: counter[section] + 1})
@@ -195,9 +207,12 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
                 break
         #check if the cell value is a string instead of an int, if so add counter to counters (event name as key and counter as value) and reset each value to 0
         next_row = ws.cell(row=row + 1, column=1).value
-        if isinstance(ws.cell(row=row, column=1).value, str) or next_row == None:
-            #subtract the "Sigmoid" with "Sigmoid tot in Rectum" to get the correct amount of Sigmoid
-            counter["Sigmoid"] -= counter["Sigmoid tot in Rectum"]
+        if isinstance(ws.cell(row=row, column=1).value, str) or next_row == None:                
+            #subtract the "section" with "section tot in Rectum" to get the correct amount of in sections
+            for section in sections[:-1]:
+                counter[section] -= counter[f'{section} tot in Rectum']
+
+
             # add the counter to the first empty value from a key in the counters dictionary
             for event in counters.keys():
                 if counters[event] == {}:
@@ -213,7 +228,10 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
                 "Descending": 0,
                 "Sigmoid": 0,
                 "Rectum": 0,
-                "Sigmoid tot in Rectum": 0
+                "Ascending tot in Rectum": 0,
+                "Transverse tot in Rectum": 0,
+                "Descending tot in Rectum": 0,
+                "Sigmoid tot in Rectum": 0,
             }
             length_counter = {
                 "aantal long s": 0,
@@ -228,6 +246,8 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
     row = 3
     for section in counter.keys():
         ws.cell(row=row, column=19, value=section)
+        fill = PatternFill(start_color=colors[section], end_color=colors[section], fill_type="solid")
+        ws.cell(row=row, column=19).fill = fill
         row += 1
     row += 1
     #Pattern types (eg. short s) added to the left of table
@@ -242,23 +262,26 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
     for (event,value) in counters.items():
         row = 2
         ws.cell(row=row, column=column, value=event)
-        fill = PatternFill(start_color="92D050", end_color="92D050", fill_type="solid")
+        fill = PatternFill(start_color=EVENT_COLOR, end_color=EVENT_COLOR, fill_type="solid")
         ws.cell(row=row, column=column).fill = fill
         row += 1
-        for element in value.values():
-            ws.cell(row=row, column=column, value=element)
+        for (section,value) in value.items():
+            ws.cell(row=row, column=column, value=value)
+            fill = PatternFill(start_color=colors[section], end_color=colors[section], fill_type="solid")
+            ws.cell(row=row, column=column).fill = fill
             row += 1
         column += 1
     
-    #Fill in the section counters
+    #Fill in the length counters
     column = 20
     for (event,value) in length_counters.items():
-        row = 10
+        row = 13
         for pattern in value.values():
             ws.cell(row=row, column=column, value=pattern)
             row += 1
         column += 1
 
+    print(counters)
     # Save the workbook
     wb.save(file_name)
     return counters
