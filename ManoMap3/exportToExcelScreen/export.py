@@ -207,20 +207,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
                 break
         #check if the cell value is a string instead of an int, if so add counter to counters (event name as key and counter as value) and reset each value to 0
         next_row = ws.cell(row=row + 1, column=1).value
-        if isinstance(ws.cell(row=row, column=1).value, str) or next_row == None:
-
-            # # create a new list with the section names but without rectum and reversed
-            # reversed_sections = sections.copy()[:-1]
-            # reversed_sections.reverse()
-            # reversed_sections_raw = reversed_sections.copy()
-            # for section in reversed_sections_raw:
-            #     for subsection in reversed_sections:
-            #         if section != subsection:
-            #             print('section , subsection',section, subsection)
-            #             counter[f'{subsection} tot in Rectum'] -= counter[f'{section} tot in Rectum']
-            #     reversed_sections = reversed_sections[1:]
-            #     print('reversed_sections', reversed_sections)
-                
+        if isinstance(ws.cell(row=row, column=1).value, str) or next_row == None:                
             #subtract the "section" with "section tot in Rectum" to get the correct amount of in sections
             for section in sections[:-1]:
                 counter[section] -= counter[f'{section} tot in Rectum']
