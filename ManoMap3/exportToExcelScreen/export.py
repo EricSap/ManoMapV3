@@ -188,12 +188,6 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
             if isinstance(cell_value, (int, float)) and cell_value > 0:
                 # Determine the section based on the column index and slider ranges
                 for i, (start, end) in enumerate(sliders[:-1]):
-                    # #if end of sigmoid AND start of rectum have a value, color the 11th column grey like the sigmoid section
-                    # if i == 3 and ws.cell(row=row, column=end+11).value != None and ws.cell(row=row, column=end+12).value != None:
-                    #     fill = PatternFill(start_color=colors["Sigmoid"], end_color=colors["Sigmoid"], fill_type="solid")
-                    #     ws.cell(row=row, column=11).fill = fill
-                    #     counter.update({"Sigmoid tot in Rectum": counter["Sigmoid tot in Rectum"] + 1})
-
                     section = sections[i]
                     rectum_start = sliders[4][0]
                     if(ws.cell(row=row, column=col).value != None and start + 11 <= col <= end + 11):
