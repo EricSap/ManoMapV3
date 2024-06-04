@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from CTkRangeSlider import *
-import tkinter
 
 def create_settings_frame(root):
     settings_frame = ctk.CTkFrame(root)
@@ -15,26 +14,23 @@ def create_settings_frame(root):
     sliders = []
 
     for i, (label_text, from_, to) in enumerate(settings):
+        value1 = ctk.IntVar()
+        value2 = ctk.IntVar()
+        value1.set(from_)
+        value2.set(to)
+
+        slider = CTkRangeSlider(settings_frame, from_=from_, to=to, variables=(value1, value2)) 
+        slider.grid(row=i, column=2, padx=5, pady=5, sticky="ew")
+
         label = ctk.CTkLabel(settings_frame, text=label_text)
         label.grid(row=i, column=0, padx=3, pady=5)
 
-        value_label1 = ctk.CTkLabel(settings_frame, text="")
+        value_label1 = ctk.CTkEntry(settings_frame, width=40, textvariable=value1)
         value_label1.grid(row=i, column=1, padx=3, pady=5)
 
-        value_label2 = ctk.CTkLabel(settings_frame, text="")
+        value_label2 = ctk.CTkEntry(settings_frame, width=40, textvariable=value2)
         value_label2.grid(row=i, column=3, padx=5, pady=5)
-
-        def update_value_label(value, label1=value_label1, label2=value_label2):
-            label1.configure(text=f"{int(round(value[0]))}")
-            label2.configure(text=f"{int(round(value[1]))}")
-        
-        slider = CTkRangeSlider(settings_frame, from_=from_, to=to, command=update_value_label) 
-        slider.grid(row=i, column=2, padx=5, pady=5, sticky="ew")
-                
         sliders.append(slider)
-
-        # Call the update_value_labels function with the initial values of the slider
-        update_value_label((from_, to))
 
     # Create an input field for broken sensors
     broken_sensor_label = ctk.CTkLabel(settings_frame, text="Broken sensor:")
@@ -73,7 +69,7 @@ def create_advanced_settings_frame(root):
         
         sliders.append(slider)
 
-        value_label = ctk.CTkLabel(advanced_settings_frame, textvariable=value)
+        value_label = ctk.CTkEntry(advanced_settings_frame, width=40, textvariable=value)
         value_label.grid(row=i, column=2, padx=5, pady=5)
 
     return advanced_settings_frame, sliders

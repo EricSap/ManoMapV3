@@ -77,7 +77,7 @@ def create_sensors_frame(root):
         
         settings_sliders.append(slider)
 
-        value_label = ctk.CTkLabel(sensors_frame, textvariable=value)
+        value_label = ctk.CTkEntry(sensors_frame, textvariable=value, width=40)
         value_label.grid(row=row_index, column=1, padx=5, pady=5)
 
     return sliders, settings_sliders
