@@ -35,6 +35,14 @@ def placeComment(settings_frame):
 def create_event_interface(settings_frame):
     global hourText, minText, secText, commentText  # Declare globals
 
+    # Label for first comment, which has no specified time. Start time is just the start
+    first_event_label = ctk.CTkLabel(settings_frame, text="First Event: ")
+    first_event_label.pack(padx=1, pady=1)
+    
+    # Frame for the name of the first event
+    first_event_text = ctk.CTkEntry(settings_frame)
+    first_event_text.pack(padx=1, pady=1)
+
     # Time and Comment Frame
     timecommentBundle = ctk.CTkFrame(settings_frame)
     timecommentBundle.pack(padx=20, pady=20)
@@ -86,7 +94,7 @@ def create_event_interface(settings_frame):
     # Place Event Button
     placeCommentButton = ctk.CTkButton(settings_frame, text="Place Event", command=lambda: (placeComment(settings_frame), show_comments(settings_frame)))
     placeCommentButton.pack(pady=10, padx=10)
-    return hourText, minText, secText, commentText
+    return first_event_text
 
 def get_time_text():
     # Get the content of each Entry widget and strip any extra whitespace
