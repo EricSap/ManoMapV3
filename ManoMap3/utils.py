@@ -205,7 +205,7 @@ def data_to_XML(data, advanced_sliders):
 
     return sequencesTXT
 
-def approximate_broken_sensor(broken_sensor_entry):
+def approximate_broken_sensor(broken_sensor_entries):
      # Read the data from the file
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -224,12 +224,18 @@ def approximate_broken_sensor(broken_sensor_entry):
     # Convert the list to a numpy array for easier manipulation
     data = np.array(data, dtype=object)
     
-    # Identify the index for the broken sensor
-    broken_sensor_index = int(broken_sensor_entry.get())
-    
-    # Replace the broken sensor values with the average of the previous and next sensor values
-    for row in data:
-        row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+    for broken_sensor in broken_sensor_entries:
+        print(broken_sensor_entries)
+        if not broken_sensor.get().strip(' ') == '':
+            broken_sensor_index = int(broken_sensor.get())
+            # Replace the broken sensor values with the average of the previous and next sensor values
+            for row in data:
+                if broken_sensor_index == 1:
+                    row[broken_sensor_index] = row[broken_sensor_index + 1]
+                elif broken_sensor_index == len(row) - 1:
+                    row[broken_sensor_index] = row[broken_sensor_index - 1]
+                else:
+                    row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
     
     # Save the modified data back to the file or return it
     with open(filename.split('.txt')[0] + '_approximated.txt', 'w') as file:
