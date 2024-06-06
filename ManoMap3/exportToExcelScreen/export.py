@@ -5,6 +5,25 @@ from openpyxl.styles import Alignment, PatternFill
 
 global EVENT_COLOR
 EVENT_COLOR = "F0FC5A"
+global disabled_sections
+disabled_sections = []
+
+def custom_sort(item):
+    order = ["Ascending", "Transverse", "Descending", "Sigmoid", "Rectum"]
+    return order.index(item)
+
+def remove_disabled_sections(section):
+    global disabled_sections
+    if section in disabled_sections:
+        disabled_sections.remove(section)
+    disabled_sections = sorted(disabled_sections, key=custom_sort)
+
+def add_disabled_sections(section):
+    global disabled_sections
+    if section not in disabled_sections:
+        disabled_sections.append(section)
+    disabled_sections = sorted(disabled_sections, key=custom_sort)
+
 
 def exportToXlsx(data, file_name, sliders, events, settings_sliders):
     # Split the file path into the base name and extension
@@ -51,6 +70,12 @@ def mergeAndColorCells(file_name, sliders):
     
     # Define the sections and their corresponding colors
     sections = ["Ascending", "Transverse", "Descending", "Sigmoid", "Rectum"]
+    sliders = getSliderValues(sliders)
+
+    for section in disabled_sections:
+        sections.remove(section)
+        sliders.pop(0)
+
     colors = {
         "Ascending": "A9D08E",
         "Transverse": "BDD7EE",
@@ -60,7 +85,6 @@ def mergeAndColorCells(file_name, sliders):
     }
 
     # Merge cells and color them for each section
-    sliders = getSliderValues(sliders)
     for i, (start, end) in enumerate(sliders):
         start_col = get_column_letter(start + 11)
         end_col = get_column_letter(end + 11)
@@ -92,7 +116,6 @@ def addEventNameAtGivenTime(file_name, hour, minute, second, event_name):
             insertion_row = row
             break
     
-
     if insertion_row is None:
         insertion_row = ws.max_row + 1
     
@@ -108,7 +131,6 @@ def addEventNameAtGivenTime(file_name, hour, minute, second, event_name):
     ws.cell(row=insertion_row, column=3, value=minute)
     ws.cell(row=insertion_row, column=4, value=second)
 
-    
     # Save the workbook
     wb.save(file_name)
 
@@ -153,7 +175,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         counters.update({event_name: {}})
         length_counters.update({event_name: {}})
 
-    counter = {
+    counter_template = {
         "Ascending": 0,
         "Transverse": 0,
         "Descending": 0,
@@ -165,7 +187,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         "Sigmoid tot in Rectum": 0,
     }
 
-    length_counter = {
+    length_counter_template = {
         "aantal long s": 0,
         "aantal short s": 0,
         "aantal long r": 0,
@@ -173,6 +195,19 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         "aantal long a": 0,
         "aantal short a": 0,
     }
+    length_counter = length_counter_template.copy()
+
+    keys_to_remove = []
+    for section in disabled_sections:
+        sections.remove(section)
+        sliders.pop(0)
+        for key in counter_template.keys():
+            if section in key:
+                keys_to_remove.append(key)
+
+    for key in keys_to_remove:
+        del counter_template[key]
+    counter = counter_template.copy()
 
     # Iterate over each row starting from row 22
     for row in range(22, ws.max_row + 1):
@@ -189,7 +224,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
                 # Determine the section based on the column index and slider ranges
                 for i, (start, end) in enumerate(sliders[:-1]):
                     section = sections[i]
-                    rectum_start = sliders[4][0]
+                    rectum_start = sliders[4-len(disabled_sections)][0]
                     if(ws.cell(row=row, column=col).value != None and start + 11 <= col <= end + 11):
                         if all(ws.cell(row=row, column=col2).value != None for col2 in range(col,  rectum_start + 12)):
                             counter.update({f'{section} tot in Rectum': counter[f'{section} tot in Rectum'] + 1})
@@ -212,7 +247,6 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
             for section in sections[:-1]:
                 counter[section] -= counter[f'{section} tot in Rectum']
 
-
             # add the counter to the first empty value from a key in the counters dictionary
             for event in counters.keys():
                 if counters[event] == {}:
@@ -222,25 +256,8 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
                 if length_counters[event] == {}:
                     length_counters[event] = length_counter
                     break
-            counter = {
-                "Ascending": 0,
-                "Transverse": 0,
-                "Descending": 0,
-                "Sigmoid": 0,
-                "Rectum": 0,
-                "Ascending tot in Rectum": 0,
-                "Transverse tot in Rectum": 0,
-                "Descending tot in Rectum": 0,
-                "Sigmoid tot in Rectum": 0,
-            }
-            length_counter = {
-                "aantal long s": 0,
-                "aantal short s": 0,
-                "aantal long r": 0,
-                "aantal short r": 0,
-                "aantal long a": 0,
-                "aantal short a": 0,
-            }
+            counter = counter_template.copy()
+            length_counter = length_counter_template.copy()
 
     #Section names added to the left of table
     row = 3
@@ -251,6 +268,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         row += 1
     row += 1
     #Pattern types (eg. short s) added to the left of table
+    length_counter_row_start = row
     for pattern in length_counter.keys():
         ws.cell(row=row, column=19, value=pattern)
         fill = PatternFill(start_color="F4B084", end_color="F4B084", fill_type="solid")
@@ -275,7 +293,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
     #Fill in the length counters
     column = 20
     for (event,value) in length_counters.items():
-        row = 13
+        row = length_counter_row_start
         for pattern in value.values():
             ws.cell(row=row, column=column, value=pattern)
             row += 1
