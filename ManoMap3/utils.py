@@ -7,6 +7,8 @@ from patternDetectionScreen.detectionv2 import find_contractions_from_patterns, 
 from patternDetectionScreen import heatplot
 from patternDetectionScreen import signalplot
 import numpy as np
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 global valuesDict
 global filename
@@ -235,3 +237,83 @@ def approximate_broken_sensor(broken_sensor_entry):
     with open(filename.split('.txt')[0] + '_approximated.txt', 'w') as file:
         for row in data:
             file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+
+def process_sequences(data):
+    sequences = []
+    
+    for sequence in data:
+        # Extract start and end samples
+        start_sample = sequence[0][0]
+        end_sample = sequence[-1][0]
+        
+        # Extract start and end sensors (channels)
+        start_sensor = sequence[0][1]
+        end_sensor = sequence[-1][1]
+
+        # print("start_sample: ", start_sample)
+        # print("end_sample: ", end_sample)
+        # print("start_sensor: ", start_sensor)
+        # print("end_sensor: ", end_sensor)
+        
+        # Create a new sequence dictionary
+        seq_dict = {
+            "startSample": start_sample * 10,
+            "endSample": end_sample * 10,
+            "startChannel": int(start_sensor.split('_')[1]) - 2,
+            "endChannel": int(end_sensor.split('_')[1]) - 2,
+            "ranges": []
+        }
+        
+        # Add range data
+        for entry in sequence:
+            sample, sensor, _ = entry
+            channel = int(sensor.split('_')[1]) -2
+            seq_dict["ranges"].append({
+                "channel": channel,
+                "maxSample": sample * 10
+            })
+        
+        sequences.append(seq_dict)
+    
+    return sequences
+
+def sequences_to_xml(sequences):
+    root = ET.Element("sequences")
+    
+    for seq in sequences:
+        # print("sequences: ", seq)
+        time = int((seq["endSample"]) - int(seq["startSample"]))
+        if (time == 0):
+            velocity = "INF"
+            dir = 'Synchronous'
+        else:
+            velocity = ((int(seq["endChannel"]) - int(seq["startChannel"])) * 25 ) / (time / 10)
+            if int(velocity) > 0:
+                dir = 'Antegrade'
+            elif int(velocity) < 0:
+                dir = 'Retrograde'
+
+        # print("velocity: ", velocity)
+        seq_elem = ET.SubElement(root, "sequence", {
+            "dir": dir,
+            "vel": str(velocity),
+            "startSample": str(seq["startSample"]),
+            "endSample": str(seq["endSample"]),
+            "startChannel": str(seq["startChannel"]),
+            "endChannel": str(seq["endChannel"])
+        })
+        
+        for r in seq["ranges"]:
+            ET.SubElement(seq_elem, "range", {
+                "channel": str(r["channel"]),
+                "maxSample": str(r["maxSample"])
+            })
+    
+    xml_str = minidom.parseString(ET.tostring(root, encoding='utf-8')).toprettyxml(indent="    ")
+    return xml_str.split('\n', 1)[-1]  # Remove the first line which contains the redundant XML declaration
+
+def write_xml_to_file(xml_output, filename):
+    with open(filename, 'w', encoding='utf-8') as file:
+        file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
+        file.write(xml_output)
+        print("XML file 'hrm_output' has been created.")
