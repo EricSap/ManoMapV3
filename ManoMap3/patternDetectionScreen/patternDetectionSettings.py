@@ -36,9 +36,15 @@ def create_settings_frame(root):
     broken_sensor_label = ctk.CTkLabel(settings_frame, text="Broken sensor:")
     broken_sensor_label.grid(row=len(settings), column=0, padx=3, pady=5)
 
-    broken_sensor_entry = ctk.CTkEntry(settings_frame)
-    broken_sensor_entry.grid(row=len(settings), column=1, columnspan=3, padx=5, pady=5, sticky="ew")
-    return settings_frame, sliders, broken_sensor_entry
+    broken_sensor_entry1 = ctk.CTkEntry(settings_frame)
+    broken_sensor_entry1.grid(row=len(settings), column=1, columnspan=1, padx=5, pady=5, sticky="ew")
+
+    broken_sensor_entry2 = ctk.CTkEntry(settings_frame)
+    broken_sensor_entry2.grid(row=len(settings), column=2, columnspan=1, padx=5, pady=5, sticky="ew")
+
+    broken_sensor_entries = [broken_sensor_entry1, broken_sensor_entry2]
+
+    return settings_frame, sliders, broken_sensor_entries
 
 
 def create_advanced_settings_frame(root):
