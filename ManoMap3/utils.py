@@ -42,6 +42,15 @@ def toggle_mode():
         new_mode = "Light"
     ctk.set_appearance_mode(new_mode)
 
+def convertTime(time_entries):
+    try:
+        hour = int(time_entries[0].get())
+        minute = int(time_entries[1].get())
+        second = int(time_entries[2].get())
+        total_seconds = hour * 3600 + minute * 60 + second
+        print("total_seconds", total_seconds)
+    except ValueError:
+        print("error with converting time_entries")
 
 
 def display_excel_filename(root, button_export):

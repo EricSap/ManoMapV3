@@ -45,7 +45,7 @@ def create_settings_frame(root):
     broken_sensor_entries = [broken_sensor_entry1, broken_sensor_entry2]
 
     # Create time entries
-    time_label = ctk.CTkLabel(settings_frame, text="Time:")
+    time_label = ctk.CTkLabel(settings_frame, text="Detection Starttime:")
     time_label.grid(row=len(settings)+1, column=0, padx=3, pady=5, sticky="w")
 
     hour_entry = ctk.CTkEntry(settings_frame, width=40, placeholder_text="HH")
