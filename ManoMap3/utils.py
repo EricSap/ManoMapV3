@@ -236,8 +236,13 @@ def approximate_broken_sensor(broken_sensor_entries):
                     row[broken_sensor_index] = row[broken_sensor_index - 1]
                 else:
                     row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+
+    # Prompt the user to select where to save the new file
+    save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")], initialfile = f"{filename.split('.txt')[0]}_approximated.txt")
     
     # Save the modified data back to the file or return it
-    with open(filename.split('.txt')[0] + '_approximated.txt', 'w') as file:
+    with open(save_path, 'w') as file:
         for row in data:
             file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+
+    print(f"File saved as: {save_path}")
