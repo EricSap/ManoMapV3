@@ -44,7 +44,28 @@ def create_settings_frame(root):
 
     broken_sensor_entries = [broken_sensor_entry1, broken_sensor_entry2]
 
-    return settings_frame, sliders, broken_sensor_entries 
+    # Create time entries
+    time_label = ctk.CTkLabel(settings_frame, text="Time:")
+    time_label.grid(row=len(settings)+1, column=0, padx=3, pady=5, sticky="w")
+
+    hour_entry = ctk.CTkEntry(settings_frame, width=40, placeholder_text="HH")
+    hour_entry.grid(row=len(settings)+1, column=1, padx=5, pady=5, sticky="ew")
+
+    colon_label1 = ctk.CTkLabel(settings_frame, text=":")
+    colon_label1.grid(row=len(settings)+1, column=2, padx=2, pady=5, sticky="w")
+
+    minute_entry = ctk.CTkEntry(settings_frame, width=40, placeholder_text="MM")
+    minute_entry.grid(row=len(settings)+1, column=3, padx=5, pady=5, sticky="ew")
+
+    colon_label2 = ctk.CTkLabel(settings_frame, text=":")
+    colon_label2.grid(row=len(settings)+1, column=4, padx=2, pady=5, sticky="w")
+
+    second_entry = ctk.CTkEntry(settings_frame, width=40, placeholder_text="SS")
+    second_entry.grid(row=len(settings)+1, column=5, padx=5, pady=5, sticky="ew")
+
+    time_entries = [hour_entry, minute_entry, second_entry]
+
+    return settings_frame, sliders, broken_sensor_entries, time_entries
 
 
 def create_advanced_settings_frame(root):

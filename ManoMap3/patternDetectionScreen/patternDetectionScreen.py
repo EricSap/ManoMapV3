@@ -28,7 +28,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     #Settings Frame
     settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
     settings_frame.grid(row=2, column=0, columnspan=1, pady=20, padx=20, sticky="nsew")
-    settings_frame_2, sliders, broken_sensor_entries = create_settings_frame(settings_frame)
+    settings_frame_2, sliders, broken_sensor_entries, time_entries = create_settings_frame(settings_frame)
 
     # Label for Settings frame
     settings_label = ctk.CTkLabel(settings_frame, text="Settings", font=("Arial", 14, "bold"))
@@ -61,6 +61,9 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
 
     button_approximate = ctk.CTkButton(main_frame, text="Approximate broken sensors", command=lambda: approximate_broken_sensor(broken_sensor_entries))
     button_approximate.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
+
+    button_test = ctk.CTkButton(main_frame, text="Time test", command=None)
+    button_test.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
 
     # Configure grid weights for responsiveness
     main_frame.grid_columnconfigure(0, weight=1)
