@@ -20,7 +20,7 @@ def create_settings_frame(root):
         value2.set(to)
 
         slider = CTkRangeSlider(settings_frame, from_=from_, to=to, variables=(value1, value2)) 
-        slider.grid(row=i, column=2, padx=5, pady=5, sticky="ew")
+        slider.grid(row=i, column=2, padx=3, pady=5, sticky="ew")
 
         label = ctk.CTkLabel(settings_frame, text=label_text)
         label.grid(row=i, column=0, padx=3, pady=5)
@@ -29,22 +29,22 @@ def create_settings_frame(root):
         value_label1.grid(row=i, column=1, padx=3, pady=5)
 
         value_label2 = ctk.CTkEntry(settings_frame, width=40, textvariable=value2)
-        value_label2.grid(row=i, column=3, padx=5, pady=5)
+        value_label2.grid(row=i, column=3, padx=3, pady=5)
         sliders.append(slider)
 
     # Create an input field for broken sensors
     broken_sensor_label = ctk.CTkLabel(settings_frame, text="Broken sensor:")
     broken_sensor_label.grid(row=len(settings), column=0, padx=3, pady=5)
 
-    broken_sensor_entry1 = ctk.CTkEntry(settings_frame)
-    broken_sensor_entry1.grid(row=len(settings), column=1, columnspan=1, padx=5, pady=5, sticky="ew")
+    broken_sensor_entry1 = ctk.CTkEntry(settings_frame, width=40)
+    broken_sensor_entry1.grid(row=len(settings), column=1, columnspan=1, padx=5, pady=5, sticky="w")
 
-    broken_sensor_entry2 = ctk.CTkEntry(settings_frame)
-    broken_sensor_entry2.grid(row=len(settings), column=2, columnspan=1, padx=5, pady=5, sticky="ew")
+    broken_sensor_entry2 = ctk.CTkEntry(settings_frame, width=40)
+    broken_sensor_entry2.grid(row=len(settings), column=2, columnspan=1, padx=5, pady=5, sticky="w")
 
     broken_sensor_entries = [broken_sensor_entry1, broken_sensor_entry2]
 
-    return settings_frame, sliders, broken_sensor_entries
+    return settings_frame, sliders, broken_sensor_entries 
 
 
 def create_advanced_settings_frame(root):
