@@ -62,7 +62,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_approximate = ctk.CTkButton(main_frame, text="Approximate broken sensors", command=lambda: approximate_broken_sensor(broken_sensor_entries))
     button_approximate.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
 
-    button_test = ctk.CTkButton(main_frame, text="Time test", command=lambda: convertTime(time_entries))
+    button_test = ctk.CTkButton(main_frame, text="Detection Starttime", command=lambda: convertTime(time_entries))
     button_test.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
 
     # Configure grid weights for responsiveness
