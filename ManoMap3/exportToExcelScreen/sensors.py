@@ -39,10 +39,21 @@ def create_sensors_frame(root):
                 sliders[i - 1].set([prev_start, start - 1])
                 value_labels[i - 1][0].configure(text=f"{int(prev_start)}")
                 value_labels[i - 1][1].configure(text=f"{start - 1}")
-
+    
+    def checkbox_event(i):
+        if checkboxes[i].get() == "on":
+            sliders[i].configure(state="normal", progress_color="grey", button_color="#1F6AA5")
+        else:
+            sliders[i].configure(state="disabled",  progress_color="transparent", button_color="grey")
+    checkboxes = []
     for i, (label_text, from_, to, start_value, end_value) in enumerate(colonregions):
-        label = ctk.CTkLabel(sensors_frame, text=label_text)
-        label.grid(row=i, column=0, padx=5, pady=5)
+        setting_checkbox = ctk.CTkCheckBox(sensors_frame, text=label_text, onvalue="on", offvalue="off", command=lambda i=i: checkbox_event(i))
+        setting_checkbox.grid(row=i, column=0, padx=5, pady=5)
+        setting_checkbox.select()
+        checkboxes.append(setting_checkbox)
+
+        # label = ctk.CTkLabel(sensors_frame, text=label_text)
+        # label.grid(row=i, column=0, padx=5, pady=5)
 
         # Value label to the left of the slider
         value_label1 = ctk.CTkLabel(sensors_frame, text="")
@@ -50,6 +61,7 @@ def create_sensors_frame(root):
 
         # Slider
         slider = CTkRangeSlider(sensors_frame, from_=from_, to=to, command=lambda value, i=i: update_value_label(value, i))
+        print("slider color: ",slider.cget("button_color"))
         slider.grid(row=i, column=2, padx=5, pady=5, sticky="ew")
         slider.set([start_value, end_value])
         sliders.append(slider)
