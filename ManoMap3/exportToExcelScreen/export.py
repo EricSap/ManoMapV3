@@ -6,7 +6,7 @@ from openpyxl.styles import Alignment, PatternFill
 global EVENT_COLOR
 EVENT_COLOR = "F0FC5A"
 
-def exportToXlsx(data, file_name, sliders, events, settings_sliders):
+def exportToXlsx(data, file_name, sliders, events, settings_sliders, first_event_text):
     # Split the file path into the base name and extension
     base_name, ext = file_name.rsplit('.', 1)
 
@@ -25,7 +25,7 @@ def exportToXlsx(data, file_name, sliders, events, settings_sliders):
             hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
             minute, second = divmod(remainder, 60)  # Calculate minutes and seconds
             addEventNameAtGivenTime(new_file_name, hour, minute, second, event_name)
-        assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders)
+        assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders, first_event_text.get())
         print(f"Data successfully exported to {new_file_name}")
     except Exception as e:
         print(f"Error exporting data to Excel: {e}")
@@ -121,7 +121,7 @@ def insertEmptyRows(file_name, amount):
     
     wb.save(file_name)
 
-def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_sliders):
+def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_sliders, first_event_text):
     # Load the workbook and select the active sheet
     wb = load_workbook(file_name)
     ws = wb.active
@@ -146,9 +146,12 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
 
     counters = {}
     length_counters = {}
+    
+    if first_event_text.strip(' ') == '':
+        first_event_text = "Post-Wake"
 
-    counters.update({"Post-Wake": {}})
-    length_counters.update({"Post-Wake": {}})
+    counters.update({str(first_event_text): {}})
+    length_counters.update({str(first_event_text): {}})
     for event_name in event_names:
         counters.update({event_name: {}})
         length_counters.update({event_name: {}})
