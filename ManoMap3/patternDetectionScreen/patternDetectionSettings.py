@@ -7,7 +7,6 @@ def create_settings_frame(root):
 
     # Format for each setting: (label_text, from_, to)
     settings = [
-        ("Threshold:", 0, 500),
         ("Visible sensors:", 1, 40)
     ]
 
@@ -54,12 +53,10 @@ def create_advanced_settings_frame(root):
 
     # Format for each setting: (label_text, from_, to, default_value)
     settings = [
-        ("Distance between sensors (mm)", 1, 200, 25),
-        ("Amount of overlapped sensors", 1, 7, 2),
-        ("Amount of sensors", 1 , 7, 2),
-        ("Granularity", 1, 100, 10),
-        ("Detection threshold", 1, 50, 10),
-        ("Line opacity (%)", 20, 100, 100)
+        ("Detection threshold", 1, 20, 10),
+        ("Minimum pattern length", 1, 10, 3),
+        ("Maximum chunk size (s)", 1, 100, 50),
+        ("Distance between sensors (mm)", 1, 50, 25),
     ]
 
     sliders = []
