@@ -185,7 +185,8 @@ def sequences_to_xml(sequences):
     return xml_str.split('\n', 1)[-1]  # Remove the first line which contains the redundant XML declaration
 
 def write_xml_to_file(xml_output, filename):
-    with open(filename, 'w', encoding='utf-8') as file:
+    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_mmhg.seq")
+    with open(save_path, 'w', encoding='utf-8') as file:
         file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
         file.write(xml_output)
         print("XML file 'hrm_output' has been created.")
