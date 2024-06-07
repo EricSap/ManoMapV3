@@ -129,4 +129,4 @@ def compute_patterns():
 def exportToXML_2():
     sequences = process_sequences(result)
     xml_output = sequences_to_xml(sequences)
-    write_xml_to_file(xml_output, 'hrm_output')
+    write_xml_to_file(xml_output, filename)
