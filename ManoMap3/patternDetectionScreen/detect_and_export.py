@@ -32,7 +32,7 @@ def import_txt_file_detection(button_export, file_label):
         print("No file selected.")
     return input_file_path
 
-def read_data():
+def read_data(total_seconds):
     # Read the data into a DataFrame
     global data
 
@@ -145,7 +145,7 @@ def compute_patterns(sliders, advanced_sliders, time_entries):
     else:
         print("Invalid time format")
     
-    read_data()
+    read_data(total_seconds)
 
     global result
     result = define_chunks_and_get_patterns(data)

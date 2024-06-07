@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import clear_screen, clearEvents, approximate_broken_sensor, detectionStarttime
+from utils import clear_screen, approximate_broken_sensor
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML_2
 
