@@ -1,7 +1,6 @@
 import customtkinter as ctk
-from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed, showSignalsPressed, exportToXML, approximate_broken_sensor
+from utils import clear_screen, clearEvents, approximate_broken_sensor
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
-import patternDetectionScreen.heatplot as heatplot
 from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML_2
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
@@ -21,9 +20,6 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
 
     file_label = ctk.CTkLabel(main_frame, text="No file selected", font=("Arial", 12))
     file_label.grid(row=1, column=1, columnspan=3, padx=10, pady=10, sticky="ew")
-
-    # button_plot_data = ctk.CTkButton(main_frame, text="Plot Data", command= lambda: showPlotPressed(sliders))
-    # button_plot_data.grid(row=1, column=1, columnspan=3, padx=20, pady=10, sticky="ew")
 
     #Settings Frame
     settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
@@ -49,9 +45,6 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
 
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)
     button_detect_events.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
-
-    button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=lambda: showSignalsPressed(sliders))
-    button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
     button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML_2(), state='disabled')
     button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")

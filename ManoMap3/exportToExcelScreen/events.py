@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from manoutilsv2 import *
+from utils import validateTime, convertTime, convertTimeToText
 
 commentsDict = {}
 

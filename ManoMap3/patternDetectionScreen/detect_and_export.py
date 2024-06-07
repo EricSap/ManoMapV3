@@ -43,23 +43,20 @@ def read_data():
     # Rename the columns: time and sensors
     data.columns = ['time'] + [f'sensor_{i}' for i in range(1, 42)]
 
-    # Filter out rows where the time is not an integer (i.e., contains a decimal point)
-    data = data[data['time'] % 1 == 0]
+    # Keep rows where the time has a decimal part of .0
+    data = data[data['time'] == data['time'].astype(int)]
 
     # Filter out rows where the time is 7800 seconds or below
     data = data[data['time'] > 7800]
-    
-    # Write the filtered data to the output file
-    data.to_csv('data.txt', sep=' ', index=False, header=False)
+
+    # Remove the decimal part from the time
+    data['time'] = data['time'].astype(int)
 
 def find_patterns(chunk):
     patterns = []
     max_sensor_values = chunk.drop(columns=['time']).max(axis=0)
     #filter the series to only include sensors that exceed the threshold
     max_sensor_values = max_sensor_values[max_sensor_values > threshold]
-
-    #find the time correlated to the value of the sensor
-    print("max_sensor_values.index ", max_sensor_values.index)
 
     #if there are 3 or more following (eg. sensor_23, sensor_24, sensor_25) sensors that exceed the threshold, create a list of these sensors until the next sensor is not right beside the previous one
     for sensor in max_sensor_values.index:
@@ -80,8 +77,6 @@ def find_patterns(chunk):
 
         if len(pattern) >= min_pattern_length:
             patterns.append(pattern)
-    # print("patternssss",patterns)
-
     return patterns
 
 def define_chunks_and_get_patterns(data):
@@ -117,12 +112,6 @@ def define_chunks_and_get_patterns(data):
                 chunks.append(chunk)
             blob_found = False
 
-    #print the chunks (type <class 'pandas.core.frame.DataFrame'>) to chunks.txt
-    with open('chunks.txt', 'w') as file:
-        for chunk in chunks:
-            file.write(f'{chunk}\n\n')
-
-
     for chunk in chunks:
         patterns = find_patterns(chunk)
         if not patterns:
@@ -140,4 +129,4 @@ def compute_patterns():
 def exportToXML_2():
     sequences = process_sequences(result)
     xml_output = sequences_to_xml(sequences)
-    write_xml_to_file(xml_output, 'hrm_output3')
+    write_xml_to_file(xml_output, 'hrm_output')
