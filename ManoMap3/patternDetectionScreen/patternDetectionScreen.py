@@ -2,7 +2,7 @@ import customtkinter as ctk
 from utils import display_txt_filename, clear_screen, detectEventsPressed, clearEvents, showPlotPressed, showSignalsPressed, exportToXML, approximate_broken_sensor
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 import patternDetectionScreen.heatplot as heatplot
-
+from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML_2
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -16,7 +16,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     title_label.grid(row=0, column=0, columnspan=3, pady=10)
 
     # Top Buttons
-    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: display_txt_filename(root, button_export, file_label))
+    button_select_input = ctk.CTkButton(main_frame, text="Select Input File", command=lambda: import_txt_file_detection(button_export, file_label))
     button_select_input.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
 
     file_label = ctk.CTkLabel(main_frame, text="No file selected", font=("Arial", 12))
@@ -44,7 +44,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     settings_label.pack(pady=10)
 
     # Bottom Buttons
-    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: detectEventsPressed(sliders, advanced_sliders))
+    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns())
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)
@@ -53,7 +53,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_plot_signals = ctk.CTkButton(main_frame, text="Plot Signals", command=lambda: showSignalsPressed(sliders))
     button_plot_signals.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
 
-    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML(advanced_sliders), state='disabled')
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML_2(), state='disabled')
     button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
