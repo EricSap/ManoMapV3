@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from utils import clear_screen, clearEvents, approximate_broken_sensor
+from utils import clear_screen, clearEvents, approximate_broken_sensor, detectionStarttime
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
 from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML_2
 
@@ -24,7 +24,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     #Settings Frame
     settings_frame = ctk.CTkFrame(main_frame, border_width=1, border_color="gray", width=400)
     settings_frame.grid(row=2, column=0, columnspan=1, pady=20, padx=20, sticky="nsew")
-    settings_frame_2, sliders, broken_sensor_entries = create_settings_frame(settings_frame)
+    settings_frame_2, sliders, broken_sensor_entries, time_entries = create_settings_frame(settings_frame)
 
     # Label for Settings frame
     settings_label = ctk.CTkLabel(settings_frame, text="Settings", font=("Arial", 14, "bold"))
@@ -40,7 +40,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     settings_label.pack(pady=10)
 
     # Bottom Buttons
-    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns())
+    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns(time_entries))
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_detect_events = ctk.CTkButton(main_frame, text="Clear events", command=clearEvents)

@@ -1,7 +1,7 @@
 import os
 from utils import process_sequences
 import pandas as pd
-from utils import sequences_to_xml, write_xml_to_file
+from utils import sequences_to_xml, write_xml_to_file, convertTime, validateTime
 from tkinter import filedialog
 
 global result
@@ -34,7 +34,7 @@ min_pattern_length = 3
 # Define the time window for chunks (900 seconds)
 time_window = 50
 
-def read_data():
+def read_data(total_seconds):
     # Read the data into a DataFrame
     global data
 
@@ -47,7 +47,7 @@ def read_data():
     data = data[data['time'] == data['time'].astype(int)]
 
     # Filter out rows where the time is 7800 seconds or below
-    data = data[data['time'] > 7800]
+    data = data[data['time'] > total_seconds]
 
     # Remove the decimal part from the time
     data['time'] = data['time'].astype(int)
@@ -120,8 +120,21 @@ def define_chunks_and_get_patterns(data):
             result.append(pattern)
     return result
 
-def compute_patterns():
-    read_data()
+def compute_patterns(time_entries):
+    # Extract time from entries
+    hour = time_entries[0].get()
+    minute = time_entries[1].get()
+    second = time_entries[2].get()
+    time_string = f"{hour}:{minute}:{second}"
+
+    # Validate and convert time
+    if validateTime(time_string):
+        total_seconds = round(convertTime(time_string) / 10)
+        print("Total seconds:", total_seconds)
+    else:
+        print("Invalid time format")
+  
+    read_data(total_seconds)
     global result
     result = define_chunks_and_get_patterns(data)
     print("Finished computing patterns!")
