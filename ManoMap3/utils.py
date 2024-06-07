@@ -9,11 +9,6 @@ from xml.dom import minidom
 global filename
 global file_path
 
-commentsDict = dict()
-contractions = []
-exportDataXml = []
-differentialMode = False
-
 def clear_screen(root):
     for widget in root.winfo_children():
         widget.destroy()
@@ -67,11 +62,6 @@ def convertTimeToText(input):
     time_format = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
 
     return time_format
-
-def clearEvents():
-        global contractions
-        contractions = []
-        messagebox.showinfo("detection", "Events cleared!")
 
 def approximate_broken_sensor(broken_sensor_entries):
      # Read the data from the file
@@ -138,11 +128,15 @@ def process_sequences(data):
 
         # Add range data
         for entry in sequence:
+            sensor_value = entry[2]
             sample, sensor, _ = entry
             channel = int(sensor.split('_')[1]) -2
             seq_dict["ranges"].append({
+                "startSample": start_sample * 10,
+                "endSample": end_sample * 10,
                 "channel": channel,
-                "maxSample": sample * 10
+                "maxSample": sample * 10,
+                "maxValue": sensor_value / 10 # Convert sensor value to mmHg
             })
 
         sequences.append(seq_dict)
@@ -177,15 +171,19 @@ def sequences_to_xml(sequences):
 
         for r in seq["ranges"]:
             ET.SubElement(seq_elem, "range", {
+                "startSample": str(r["startSample"]),
+                "endSample": str(r["endSample"]),
                 "channel": str(r["channel"]),
-                "maxSample": str(r["maxSample"])
+                "maxSample": str(r["maxSample"]),
+                "maxValue": str(r["maxValue"])
             })
 
     xml_str = minidom.parseString(ET.tostring(root, encoding='utf-8')).toprettyxml(indent="    ")
     return xml_str.split('\n', 1)[-1]  # Remove the first line which contains the redundant XML declaration
 
 def write_xml_to_file(xml_output, filename):
-    with open(filename, 'w', encoding='utf-8') as file:
+    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_mmhg.seq")
+    with open(save_path, 'w', encoding='utf-8') as file:
         file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
         file.write(xml_output)
         print("XML file 'hrm_output' has been created.")
