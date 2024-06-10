@@ -40,7 +40,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     settings_label.pack(pady=10)
 
     # Bottom Buttons
-    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns(sliders, advanced_sliders, time_entries))
+    button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns(sliders, advanced_sliders, time_entries, settings_frame))
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_approximate = ctk.CTkButton(main_frame, text="Approximate broken sensors", command=lambda: approximate_broken_sensor(broken_sensor_entries))

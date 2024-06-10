@@ -1,7 +1,7 @@
 import os
 from utils import process_sequences
 import pandas as pd
-from utils import sequences_to_xml, write_xml_to_file, convertTime, validateTime
+from utils import sequences_to_xml, write_xml_to_file, convertTime, validateTime, show_info_popup
 from tkinter import filedialog
 
 global result
@@ -116,7 +116,7 @@ def define_chunks_and_get_patterns(data):
                 result.append(pattern)
     return result
 
-def compute_patterns(sliders, advanced_sliders, time_entries):
+def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame):
     global visible_sensors
     visible_sensors = (int(round(sliders[0].get()[0])), int(round(sliders[0].get()[1])))
 
@@ -144,7 +144,7 @@ def compute_patterns(sliders, advanced_sliders, time_entries):
         print("Total seconds:", total_seconds)
     else:
         print("Invalid time format")
-    
+    show_info_popup("Succes", "Detection Completed", settings_frame)
     read_data(total_seconds)
 
     global result

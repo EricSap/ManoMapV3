@@ -1,23 +1,7 @@
 import customtkinter as ctk
-from utils import validateTime, convertTime, convertTimeToText
+from utils import validateTime, convertTime, convertTimeToText, show_info_popup
 
 commentsDict = {}
-
-def show_info_popup(title, message, root):
-    # Create a popup window
-    popup = ctk.CTkToplevel()
-    popup.title(title)
-
-    # Make the popup transient, so it stays on top of the root window
-    popup.transient(root)
-
-    # Create a label to display the message
-    message_label = ctk.CTkLabel(popup, text=message)
-    message_label.pack(padx=20, pady=10)
-
-    # Create a button to close the popup
-    close_button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
-    close_button.pack(pady=10)
 
 def placeComment(settings_frame):
     global commentsDict, hourText, minText, secText, commentText  # Add hourText, minText, secText, commentText as globals
