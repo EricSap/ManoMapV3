@@ -133,9 +133,9 @@ def compute_patterns(sliders, advanced_sliders, time_entries):
     distance_between_sensors = int(round(advanced_sliders[3].get()))
 
     # Extract time from entries
-    hour = time_entries[0].get()
-    minute = time_entries[1].get()
-    second = time_entries[2].get()
+    hour = time_entries[0].get() or 0
+    minute = time_entries[1].get() or 0
+    second = time_entries[2].get() or 0
     time_string = f"{hour}:{minute}:{second}"
 
     # Validate and convert time
