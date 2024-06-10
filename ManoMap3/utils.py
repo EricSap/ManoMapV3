@@ -63,6 +63,22 @@ def convertTimeToText(input):
 
     return time_format
 
+def show_info_popup(title, message, root):
+    # Create a popup window
+    popup = ctk.CTkToplevel()
+    popup.title(title)
+
+    # Make the popup transient, so it stays on top of the root window
+    popup.transient(root)
+
+    # Create a label to display the message
+    message_label = ctk.CTkLabel(popup, text=message)
+    message_label.pack(padx=20, pady=10)
+
+    # Create a button to close the popup
+    close_button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
+    close_button.pack(pady=10)
+
 def approximate_broken_sensor(broken_sensor_entries):
      # Read the data from the file
     with open(file_path, 'r') as file:
