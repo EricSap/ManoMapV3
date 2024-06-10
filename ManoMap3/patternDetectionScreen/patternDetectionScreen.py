@@ -44,13 +44,13 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
     button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML_2(), state='disabled')
-    button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
-
-    button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
-    button_back.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
+    button_export.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
 
     button_approximate = ctk.CTkButton(main_frame, text="Approximate broken sensors", command=lambda: approximate_broken_sensor(broken_sensor_entries))
-    button_approximate.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
+    button_approximate.grid(row=3, column=2, padx=10, pady=10, sticky="ew")
+
+    button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))
+    button_back.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
 
     # Configure grid weights for responsiveness
     main_frame.grid_columnconfigure(0, weight=1)
