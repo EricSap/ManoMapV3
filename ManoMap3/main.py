@@ -29,9 +29,9 @@ def create_main_screen():
 
     # Description label
     description_text = (
-        "Optimaliseer uw darmonderzoek met onze applicatie!"
-        "Automatiseer het tijdrovende proces van het identificeren van colonpatronen,"
-        "bespaar kostbare tijd voor onderzoek en analyse, en verbeter de accuraatheid van uw gegevens."
+        "Optimise your colon examination with our application! "
+        "Automate the time-consuming process of identifying colon patterns,"
+        "Save valuable time for examination and analysis, and improve the accuracy of your data."
     )
     description_label = ctk.CTkLabel(main_frame, text=description_text, font=("Arial", 14), wraplength=600, justify="center")
     description_label.pack(pady=25)
