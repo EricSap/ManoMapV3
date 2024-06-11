@@ -1,6 +1,7 @@
 import os
 from utils import process_sequences
 import pandas as pd
+import numpy as np
 from utils import sequences_to_xml, write_xml_to_file, convertTime, validateTime, show_info_popup
 from tkinter import filedialog
 
@@ -18,19 +19,67 @@ maximum_chunk_size = 30
 distance_between_sensors = 25
 
 
-def import_txt_file_detection(button_export, file_label):
+def import_txt_file_detection(file_label, button_export, button_approximate, button_detect_events):
     file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
     if file_path and os.path.isfile(file_path):
         global filename
         filename = os.path.basename(file_path)
         file_label.configure(text="Selected Text File: " + filename, font=("Arial", 12))
-        button_export.configure(state='normal')
+        # button_export.configure(state='normal')
+        button_approximate.configure(state='normal')
+        button_detect_events.configure(state='normal')
         global input_file_path
         input_file_path = file_path
     else:
         file_label.configure(text="No file selected")
+        button_export.configure(state='disabled')
+        button_approximate.configure(state='disabled')
+        button_detect_events.configure(state='disabled')
         print("No file selected.")
     return input_file_path
+
+def approximate_broken_sensor(broken_sensor_entries):
+    # Read the data from the file
+    with open(input_file_path, 'r') as file:
+        lines = file.readlines()
+    
+    # Initialize an empty list to hold the processed data
+    data = []
+    
+    # Process each line in the file
+    for line in lines:
+        if line.strip():  # Skip any empty lines
+            parts = line.split()
+            time = float(parts[0])  # Convert the first column to float for time
+            sensors = list(map(int, parts[1:]))  # Convert the rest to integers for sensor values
+            data.append([time] + sensors)
+    
+    # Convert the list to a numpy array for easier manipulation
+    data = np.array(data, dtype=object)
+    
+    for broken_sensor in broken_sensor_entries:
+        print(broken_sensor_entries)
+        if not broken_sensor.get().strip(' ') == '':
+            broken_sensor_index = int(broken_sensor.get())
+            # Replace the broken sensor values with the average of the previous and next sensor values
+            for row in data:
+                if broken_sensor_index == 1:
+                    row[broken_sensor_index] = row[broken_sensor_index + 1]
+                elif broken_sensor_index == len(row) - 1:
+                    row[broken_sensor_index] = row[broken_sensor_index - 1]
+                else:
+                    row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+
+    # Prompt the user to select where to save the new file
+    save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")], initialfile = f"{filename.split('.txt')[0]}_approximated.txt")
+    
+    # Save the modified data back to the file or return it
+    with open(save_path, 'w') as file:
+        for row in data:
+            file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+
+    print(f"File saved as: {save_path}")
+
 
 def read_data(total_seconds):
     # Read the data into a DataFrame
@@ -116,7 +165,7 @@ def define_chunks_and_get_patterns(data):
                 result.append(pattern)
     return result
 
-def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame):
+def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, button_export):
     global visible_sensors
     visible_sensors = (int(round(sliders[0].get()[0])), int(round(sliders[0].get()[1])))
 
@@ -144,14 +193,18 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame):
         print("Total seconds:", total_seconds)
     else:
         print("Invalid time format")
-    show_info_popup("Succes", "Detection Completed", settings_frame)
     read_data(total_seconds)
 
     global result
     result = define_chunks_and_get_patterns(data)
+    show_info_popup("Succes", "Detection Completed", settings_frame)
+    
+    #enable export button als de detectie gedaan is
+    button_export.configure(state='normal')
+
     print("Finished computing patterns!")
 
-def exportToXML_2():
+def exportToXML():
     sequences = process_sequences(result)
     xml_output = sequences_to_xml(sequences)
     write_xml_to_file(xml_output, filename)
