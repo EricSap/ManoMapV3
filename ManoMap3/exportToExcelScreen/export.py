@@ -1,3 +1,4 @@
+from tkinter import filedialog
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
@@ -52,7 +53,9 @@ def exportToXlsx(data, file_name, sliders, events, settings_sliders, first_event
             hour, remainder = divmod(total_seconds, 3600)  # Calculate hours
             minute, second = divmod(remainder, 60)  # Calculate minutes and seconds
             addEventNameAtGivenTime(new_file_name, hour, minute, second, event_name)
-        assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders, first_event_text.get())
+        wb = assignSectionsBasedOnStartSection(new_file_name, sliders, event_names, settings_sliders, first_event_text.get())
+        file_name = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")], initialfile=new_file_name)
+        wb.save(file_name)
         print(f"Data successfully exported to {new_file_name}")
     except Exception as e:
         print(f"Error exporting data to Excel: {e}")
@@ -351,4 +354,4 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
     print(counters)
     # Save the workbook
     wb.save(file_name)
-    return counters
+    return wb

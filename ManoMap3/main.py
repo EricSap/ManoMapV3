@@ -8,6 +8,17 @@ def create_main_screen():
     app.title("CustomTkinter Application")
     app.geometry("1200x800")
 
+    # Center the window on the screen
+    screen_width = app.winfo_screenwidth()
+    screen_height = app.winfo_screenheight()
+    window_width = 1200
+    window_height = 800
+
+    position_top = int(screen_height / 2 - window_height / 2) - 30
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    app.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
     # Main Frame
     main_frame = ctk.CTkFrame(app, corner_radius=0)  
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
