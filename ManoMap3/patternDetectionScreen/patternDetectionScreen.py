@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from utils import clear_screen, approximate_broken_sensor
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
-from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML_2
+from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     clear_screen(root)
@@ -43,7 +43,7 @@ def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_fun
     button_detect_events = ctk.CTkButton(main_frame, text="Detect Events", command=lambda: compute_patterns(sliders, advanced_sliders, time_entries))
     button_detect_events.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
-    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML_2(), state='disabled')
+    button_export = ctk.CTkButton(main_frame, text="Export", command=lambda: exportToXML(), state='disabled')
     button_export.grid(row=4, column=2, padx=10, pady=10, sticky="ew")
 
     button_back = ctk.CTkButton(main_frame, text="Back", command=lambda: go_back_func(root, create_main_screen_func))

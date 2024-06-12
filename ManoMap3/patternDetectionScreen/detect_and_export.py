@@ -151,7 +151,7 @@ def compute_patterns(sliders, advanced_sliders, time_entries):
     result = define_chunks_and_get_patterns(data)
     print("Finished computing patterns!")
 
-def exportToXML_2():
+def exportToXML():
     sequences = process_sequences(result)
     xml_output = sequences_to_xml(sequences)
     write_xml_to_file(xml_output, filename)
