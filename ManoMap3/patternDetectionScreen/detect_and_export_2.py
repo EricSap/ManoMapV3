@@ -1,9 +1,10 @@
 import os
 from utils import process_sequences
 import pandas as pd
-import numpy as np
 from utils import sequences_to_xml, write_xml_to_file, convertTime, validateTime, show_info_popup
 from tkinter import filedialog
+import numpy as np
+from scipy.ndimage import label
 
 global result
 result = []
@@ -14,10 +15,41 @@ input_file_path = ''
 
 visible_sensors = 40
 detection_threshold = 100
+zone_threshold = 100
 min_pattern_length = 3
 maximum_chunk_size = 30
 distance_between_sensors = 25
 
+timestamps = pd.DataFrame()
+values = pd.DataFrame()
+global mask
+
+
+# Define a custom structure for labeling with diagonal connections
+structure = np.array([[1, 1, 1],
+                      [1, 1, 1],
+                      [1, 1, 1]])
+
+def split_continuous_sensors(patterns):
+    continuous_segments = []
+    current_segment = []
+
+    for i, pattern in enumerate(patterns):
+        if not current_segment:
+            current_segment.append(pattern)
+        else:
+            last_sensor_number = int(current_segment[-1][1].split('_')[1])
+            current_sensor_number = int(pattern[1].split('_')[1])
+            if current_sensor_number == last_sensor_number + 1:
+                current_segment.append(pattern)
+            else:
+                continuous_segments.append(current_segment)
+                current_segment = [pattern]
+    if current_segment:
+        continuous_segments.append(current_segment)
+
+    filtered_segments = [segment for segment in continuous_segments if len(segment) >= 3]
+    return filtered_segments
 
 def import_txt_file_detection(file_label, button_export, button_approximate, button_detect_events):
     file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
@@ -80,106 +112,76 @@ def approximate_broken_sensor(broken_sensor_entries):
 
     print(f"File saved as: {save_path}")
 
-
 def read_data(total_seconds):
     # Read the data into a DataFrame
-    global data
+    global dataframe
 
-    global result
-    result = []
+    dataframe = pd.read_csv(input_file_path, sep=" ", header=None)
 
-    data = pd.read_csv(input_file_path, delim_whitespace=True, header=None)
+    dataframe = dataframe[dataframe.iloc[:, 0] > total_seconds]
 
-    # Rename the columns: time and sensors
-    data.columns = ['time'] + [f'sensor_{i}' for i in range(1, 42)]
+    # Remove milliseconds from timestamps
+    dataframe = dataframe[dataframe[0] == dataframe[0].astype(int)]
 
-    # Keep rows where the time has a decimal part of .0
-    data = data[data['time'] == data['time'].astype(int)]
+    # Separate the timestamps and the values
+    global timestamps
+    timestamps = dataframe.iloc[:, 0]
+    global values
+    values = dataframe.iloc[:, 1:]
 
-    # Filter out rows where the time is 7800 seconds or below
-    data = data[data['time'] > total_seconds]
+    # Create a mask where values are greater than the threshold
+    print("zone_threshold: ", zone_threshold)
+    global mask
+    mask = values > zone_threshold
 
-    # Remove the decimal part from the time
-    data['time'] = data['time'].astype(int)
 
-def find_patterns(chunk):
+def find_patterns(zone_df):
     patterns = []
-    max_sensor_values = chunk.drop(columns=['time']).max(axis=0)
-    #filter the series to only include sensors that exceed the threshold
-    max_sensor_values = max_sensor_values[max_sensor_values > detection_threshold]
-
-    #if there are 3 or more following (eg. sensor_23, sensor_24, sensor_25) sensors that exceed the threshold, create a list of these sensors until the next sensor is not right beside the previous one
-    for sensor in max_sensor_values.index:
-        start = int(sensor.split('_')[1])
-        pattern = []
-        stop_loop = False
-
-        for i in range(start, 41):
-            for mini_pattern in patterns:
-                if sensor in [val[1] for val in mini_pattern]:
-                    stop_loop = True
-            if stop_loop:
-                break
-            sensor_name = f'sensor_{i}'
-            if sensor_name not in max_sensor_values.index:
-                break
-            pattern.append((chunk[chunk[sensor_name] == max_sensor_values[sensor_name]]['time'].values[0], sensor_name, max_sensor_values[sensor_name]))
-
-        if len(pattern) >= min_pattern_length:
+    for sensor_id, group in zone_df.groupby('Sensor_ID'):
+        max_sensor_value = group['Value'].max()
+        sensor_timestamp = group.loc[group['Value'].idxmax(), 'Timestamp']
+        if max_sensor_value > detection_threshold:
+            pattern = (sensor_timestamp, f'sensor_{sensor_id}', max_sensor_value)
             patterns.append(pattern)
     return patterns
 
-def define_chunks_and_get_patterns(data):
-    start_time = data['time'].min()
-    end_time = data['time'].max()
+def define_chunks_and_get_patterns():
+    # Use the label function to find connected regions
+    labeled_array, num_features = label(mask, structure)
 
-    chunks = []
+    # Extract the zones, their values, timestamps, and sensor IDs
+    results = {}
+    for zone in range(1, num_features + 1):
+        zone_indices = np.argwhere(labeled_array == zone)
+        zone_data = [(timestamps.iloc[i], j + 1, values.iloc[i, j]) for i, j in zone_indices]  # j + 1 to get the sensor_id starting from 1
+        results[zone] = zone_data
+    
+    global result
+    result = []
+    # Detect patterns in each zone
+    for zone, data in results.items():
+        zone_df = pd.DataFrame(data, columns=['Timestamp', 'Sensor_ID', 'Value'])
+        zone_patterns = find_patterns(zone_df)
+        split_zone_patterns = split_continuous_sensors(zone_patterns)
 
-    chunk_start_time = start_time
-    chunk_end_time = 1
-
-    blob_found = False
-
-    for start in range(int(start_time), int(end_time)):
-        #get the max value of the sensor at the start time
-        max_value = data[data['time'] == start].drop(columns=['time']).max(axis=0).max()
-        if max_value > detection_threshold and not blob_found:
-            blob_found = True
-            chunk_start_time = start
-
-        chunk_end_time = start
-        #if the max value is below the threshold, create a chunk from chunk_start_time to time_of_max_value
-        if (max_value < detection_threshold and blob_found) or chunk_end_time - chunk_start_time > maximum_chunk_size:
-            chunk = data[(data['time'] >= chunk_start_time) & (data['time'] < chunk_end_time)]
-            if not chunk.empty:
-                # print("CHUNK",chunk)
-                chunks.append(chunk)
-            blob_found = False
-
-    for chunk in chunks:
-        patterns = find_patterns(chunk)
-        if not patterns:
-            continue
-        for pattern in patterns:
-            if pattern not in result:
-                result.append(pattern)
+        if split_zone_patterns:
+            for pattern in split_zone_patterns:
+                if len(pattern) >= 3:
+                    result.append(pattern)
     return result
 
 def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, button_export):
-    global visible_sensors
-    visible_sensors = (int(round(sliders[0].get()[0])), int(round(sliders[0].get()[1])))
-
     global detection_threshold
     detection_threshold = int(round(advanced_sliders[0].get()))
 
     global min_pattern_length
     min_pattern_length = int(round(advanced_sliders[1].get()))
-
-    global maximum_chunk_size
-    maximum_chunk_size = int(round(advanced_sliders[2].get()))
     
     global distance_between_sensors
     distance_between_sensors = int(round(advanced_sliders[3].get()))
+
+    global zone_threshold
+    zone_threshold = int(round(advanced_sliders[4].get()))
 
     # Extract time from entries
     hour = time_entries[0].get() or 0
@@ -193,16 +195,15 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
         print("Total seconds:", total_seconds)
     else:
         print("Invalid time format")
+    
     read_data(total_seconds)
 
     global result
-    result = define_chunks_and_get_patterns(data)
+    result = define_chunks_and_get_patterns()
     show_info_popup("Succes", "Detection Completed", settings_frame)
-    
-    #enable export button als de detectie gedaan is
-    button_export.configure(state='normal')
 
-    print("Finished computing patterns!")
+    #Enable export button after detection
+    button_export.configure(state='normal')
 
 def exportToXML():
     sequences = process_sequences(result)

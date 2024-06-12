@@ -33,6 +33,9 @@ def add_disabled_sections(section):
         disabled_sections.append(section)
     disabled_sections = sorted(disabled_sections, key=custom_sort)
 
+def reset_disabled_sections():
+    global disabled_sections
+    disabled_sections = []
 
 def exportToXlsx(data, file_name, sliders, events, settings_sliders, first_event_text):
     # Split the file path into the base name and extension

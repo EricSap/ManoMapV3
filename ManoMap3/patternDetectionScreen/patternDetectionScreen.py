@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from utils import clear_screen
 from patternDetectionScreen.patternDetectionSettings import create_settings_frame, create_advanced_settings_frame
-from patternDetectionScreen.detect_and_export import import_txt_file_detection, compute_patterns, exportToXML, approximate_broken_sensor
+from patternDetectionScreen.detect_and_export_2 import import_txt_file_detection, compute_patterns, exportToXML, approximate_broken_sensor
 
 def open_screen_for_pattern_detection(root, go_back_func, create_main_screen_func):
     clear_screen(root)
