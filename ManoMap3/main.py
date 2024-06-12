@@ -2,11 +2,27 @@ import customtkinter as ctk
 from exportToExcelScreen.exportToExcelScreen import export_to_excel_screen
 from patternDetectionScreen.patternDetectionScreen import open_screen_for_pattern_detection
 from utils import go_back, toggle_mode
+import sys
+import os
 
 def create_main_screen():
     app = ctk.CTk()
-    app.title("CustomTkinter Application")
+    app.title("EasyHRM")
     app.geometry("1200x800")
+    #add the icon EasyHRM_icon.ico
+
+    def resource_path(relative_path):
+        """ Get the absolute path to the resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
+
+    icon_path = resource_path("EasyHRM_icon.ico")
+    app.iconbitmap(icon_path)
 
     # Center the window on the screen
     screen_width = app.winfo_screenwidth()
