@@ -8,6 +8,17 @@ def create_main_screen():
     app.title("CustomTkinter Application")
     app.geometry("1200x800")
 
+    # Center the window on the screen
+    screen_width = app.winfo_screenwidth()
+    screen_height = app.winfo_screenheight()
+    window_width = 1200
+    window_height = 800
+
+    position_top = int(screen_height / 2 - window_height / 2) - 30
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    app.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
     # Main Frame
     main_frame = ctk.CTkFrame(app, corner_radius=0)  
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -18,9 +29,9 @@ def create_main_screen():
 
     # Description label
     description_text = (
-        "Optimaliseer uw darmonderzoek met onze applicatie!"
-        "Automatiseer het tijdrovende proces van het identificeren van colonpatronen,"
-        "bespaar kostbare tijd voor onderzoek en analyse, en verbeter de accuraatheid van uw gegevens."
+        "Optimise your colon examination with our application! "
+        "Automate the time-consuming process of identifying colon patterns,"
+        "Save valuable time for examination and analysis, and improve the accuracy of your data."
     )
     description_label = ctk.CTkLabel(main_frame, text=description_text, font=("Arial", 14), wraplength=600, justify="center")
     description_label.pack(pady=25)

@@ -1,10 +1,8 @@
 import os
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
-import numpy as np
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-
 
 global filename
 global file_path
@@ -63,47 +61,21 @@ def convertTimeToText(input):
 
     return time_format
 
-def approximate_broken_sensor(broken_sensor_entries):
-     # Read the data from the file
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-    
-    # Initialize an empty list to hold the processed data
-    data = []
-    
-    # Process each line in the file
-    for line in lines:
-        if line.strip():  # Skip any empty lines
-            parts = line.split()
-            time = float(parts[0])  # Convert the first column to float for time
-            sensors = list(map(int, parts[1:]))  # Convert the rest to integers for sensor values
-            data.append([time] + sensors)
-    
-    # Convert the list to a numpy array for easier manipulation
-    data = np.array(data, dtype=object)
-    
-    for broken_sensor in broken_sensor_entries:
-        print(broken_sensor_entries)
-        if not broken_sensor.get().strip(' ') == '':
-            broken_sensor_index = int(broken_sensor.get())
-            # Replace the broken sensor values with the average of the previous and next sensor values
-            for row in data:
-                if broken_sensor_index == 1:
-                    row[broken_sensor_index] = row[broken_sensor_index + 1]
-                elif broken_sensor_index == len(row) - 1:
-                    row[broken_sensor_index] = row[broken_sensor_index - 1]
-                else:
-                    row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+def show_info_popup(title, message, root):
+    # Create a popup window
+    popup = ctk.CTkToplevel()
+    popup.title(title)
 
-    # Prompt the user to select where to save the new file
-    save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")], initialfile = f"{filename.split('.txt')[0]}_approximated.txt")
-    
-    # Save the modified data back to the file or return it
-    with open(save_path, 'w') as file:
-        for row in data:
-            file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+    # Make the popup transient, so it stays on top of the root window
+    popup.transient(root)
 
-    print(f"File saved as: {save_path}")
+    # Create a label to display the message
+    message_label = ctk.CTkLabel(popup, text=message)
+    message_label.pack(padx=20, pady=10)
+
+    # Create a button to close the popup
+    close_button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
+    close_button.pack(pady=10)
 
 def process_sequences(data):
     sequences = []
@@ -182,7 +154,9 @@ def sequences_to_xml(sequences):
     return xml_str.split('\n', 1)[-1]  # Remove the first line which contains the redundant XML declaration
 
 def write_xml_to_file(xml_output, filename):
-    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_mmhg.seq")
+    filename = filename.split('.')[0]
+    print(filename)
+    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_detected.seq")
     with open(save_path, 'w', encoding='utf-8') as file:
         file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
         file.write(xml_output)
