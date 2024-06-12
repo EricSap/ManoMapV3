@@ -1,10 +1,8 @@
 import os
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
-import numpy as np
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-
 
 global filename
 global file_path
@@ -63,47 +61,39 @@ def convertTimeToText(input):
 
     return time_format
 
-def approximate_broken_sensor(broken_sensor_entries):
-     # Read the data from the file
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-    
-    # Initialize an empty list to hold the processed data
-    data = []
-    
-    # Process each line in the file
-    for line in lines:
-        if line.strip():  # Skip any empty lines
-            parts = line.split()
-            time = float(parts[0])  # Convert the first column to float for time
-            sensors = list(map(int, parts[1:]))  # Convert the rest to integers for sensor values
-            data.append([time] + sensors)
-    
-    # Convert the list to a numpy array for easier manipulation
-    data = np.array(data, dtype=object)
-    
-    for broken_sensor in broken_sensor_entries:
-        print(broken_sensor_entries)
-        if not broken_sensor.get().strip(' ') == '':
-            broken_sensor_index = int(broken_sensor.get())
-            # Replace the broken sensor values with the average of the previous and next sensor values
-            for row in data:
-                if broken_sensor_index == 1:
-                    row[broken_sensor_index] = row[broken_sensor_index + 1]
-                elif broken_sensor_index == len(row) - 1:
-                    row[broken_sensor_index] = row[broken_sensor_index - 1]
-                else:
-                    row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+def show_info_popup(title, message, root):
+    # Create a popup window
+    popup = ctk.CTkToplevel()
+    popup.title(title)
 
-    # Prompt the user to select where to save the new file
-    save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")], initialfile = f"{filename.split('.txt')[0]}_approximated.txt")
-    
-    # Save the modified data back to the file or return it
-    with open(save_path, 'w') as file:
-        for row in data:
-            file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+    # Make the popup transient, so it stays on top of the root window
+    popup.transient(root)
 
-    print(f"File saved as: {save_path}")
+    # Update the window to make sure it's been drawn before we try to get its size
+    popup.update()
+
+    # Get the window's width and height
+    window_width = popup.winfo_width()
+    window_height = popup.winfo_height()
+
+    # Get the screen's width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculate the position to center the window
+    position_top = (screen_height - window_height) // 2
+    position_left = (screen_width - window_width) // 2
+
+    # Position the window at the center of the screen
+    popup.geometry("+{}+{}".format(position_left, position_top))
+
+    # Create a label to display the message
+    message_label = ctk.CTkLabel(popup, text=message)
+    message_label.pack(padx=20, pady=10)
+
+    # Create a button to close the popup
+    close_button = ctk.CTkButton(popup, text="Close", command=popup.destroy)
+    close_button.pack(pady=10)
 
 def process_sequences(data):
     sequences = []
@@ -119,8 +109,8 @@ def process_sequences(data):
 
         # Create a new sequence dictionary
         seq_dict = {
-            "startSample": start_sample * 10,
-            "endSample": end_sample * 10,
+            "startSample": int(start_sample * 10),
+            "endSample": int(end_sample * 10),
             "startChannel": int(start_sensor.split('_')[1]) - 2,
             "endChannel": int(end_sensor.split('_')[1]) - 2,
             "ranges": []
@@ -132,11 +122,11 @@ def process_sequences(data):
             sample, sensor, _ = entry
             channel = int(sensor.split('_')[1]) -2
             seq_dict["ranges"].append({
-                "startSample": start_sample * 10,
-                "endSample": end_sample * 10,
+                "startSample": int(start_sample * 10),
+                "endSample": int(end_sample * 10),
                 "channel": channel,
-                "maxSample": sample * 10,
-                "maxValue": sensor_value / 10 # Convert sensor value to mmHg
+                "maxSample": int(sample * 10),
+                "maxValue": int(sensor_value)
             })
 
         sequences.append(seq_dict)
@@ -158,6 +148,8 @@ def sequences_to_xml(sequences):
                 dir = 'Antegrade'
             elif int(velocity) < 0:
                 dir = 'Retrograde'
+            elif(int(velocity) == 0):
+                dir = 'Synchronous'
 
         # print("velocity: ", velocity)
         seq_elem = ET.SubElement(root, "sequence", {
@@ -182,7 +174,9 @@ def sequences_to_xml(sequences):
     return xml_str.split('\n', 1)[-1]  # Remove the first line which contains the redundant XML declaration
 
 def write_xml_to_file(xml_output, filename):
-    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_mmhg.seq")
+    filename = filename.split('.')[0]
+    print(filename)
+    save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_detected.seq")
     with open(save_path, 'w', encoding='utf-8') as file:
         file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
         file.write(xml_output)

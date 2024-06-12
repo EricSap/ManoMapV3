@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from CTkRangeSlider import *
-from exportToExcelScreen.export import remove_disabled_sections, add_disabled_sections
+from exportToExcelScreen.export import remove_disabled_sections, add_disabled_sections, reset_disabled_sections
 
 def create_sensors_frame(root):
     sensors_frame = ctk.CTkFrame(root)
@@ -8,15 +8,16 @@ def create_sensors_frame(root):
 
     # Format for each setting: (label_text, from_, to, start_value, end_value)
     colonregions = [
-        ("Ascending:", 1, 40, 1, 32),
-        ("Transverse:", 1, 40, 33, 34),
-        ("Descending:", 1, 40, 35, 36),
-        ("Sigmoid:", 1, 40, 37, 38),
-        ("Rectum:", 1, 40, 39, 40)
+        ("Ascending:", 1, 70, 1, 62),
+        ("Transverse:", 1, 70, 63, 64),
+        ("Descending:", 1, 70, 65, 66),
+        ("Sigmoid:", 1, 70, 67, 68),
+        ("Rectum:", 1, 70, 69, 70)
     ]
     sliders = []
     value_labels = []
-    disabled_sections = []
+
+    reset_disabled_sections()
 
     # Format for each setting: (label_text, from_, to, default_value)
     settings = [
