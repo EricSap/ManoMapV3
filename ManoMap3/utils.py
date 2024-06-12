@@ -69,6 +69,24 @@ def show_info_popup(title, message, root):
     # Make the popup transient, so it stays on top of the root window
     popup.transient(root)
 
+    # Update the window to make sure it's been drawn before we try to get its size
+    popup.update()
+
+    # Get the window's width and height
+    window_width = popup.winfo_width()
+    window_height = popup.winfo_height()
+
+    # Get the screen's width and height
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+
+    # Calculate the position to center the window
+    position_top = (screen_height - window_height) // 2
+    position_left = (screen_width - window_width) // 2
+
+    # Position the window at the center of the screen
+    popup.geometry("+{}+{}".format(position_left, position_top))
+
     # Create a label to display the message
     message_label = ctk.CTkLabel(popup, text=message)
     message_label.pack(padx=20, pady=10)
@@ -91,8 +109,8 @@ def process_sequences(data):
 
         # Create a new sequence dictionary
         seq_dict = {
-            "startSample": start_sample * 10,
-            "endSample": end_sample * 10,
+            "startSample": int(start_sample * 10),
+            "endSample": int(end_sample * 10),
             "startChannel": int(start_sensor.split('_')[1]) - 2,
             "endChannel": int(end_sensor.split('_')[1]) - 2,
             "ranges": []
@@ -104,11 +122,11 @@ def process_sequences(data):
             sample, sensor, _ = entry
             channel = int(sensor.split('_')[1]) -2
             seq_dict["ranges"].append({
-                "startSample": start_sample * 10,
-                "endSample": end_sample * 10,
+                "startSample": int(start_sample * 10),
+                "endSample": int(end_sample * 10),
                 "channel": channel,
-                "maxSample": sample * 10,
-                "maxValue": sensor_value / 10 # Convert sensor value to mmHg
+                "maxSample": int(sample * 10),
+                "maxValue": int(sensor_value)
             })
 
         sequences.append(seq_dict)
@@ -130,6 +148,8 @@ def sequences_to_xml(sequences):
                 dir = 'Antegrade'
             elif int(velocity) < 0:
                 dir = 'Retrograde'
+            elif(int(velocity) == 0):
+                dir = 'Synchronous'
 
         # print("velocity: ", velocity)
         seq_elem = ET.SubElement(root, "sequence", {
