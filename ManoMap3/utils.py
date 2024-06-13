@@ -137,7 +137,6 @@ def sequences_to_xml(sequences):
     root = ET.Element("sequences")
 
     for seq in sequences:
-        # print("sequences: ", seq)
         time = int((seq["endSample"]) - int(seq["startSample"]))
         if (time == 0):
             velocity = "INF"
@@ -151,7 +150,6 @@ def sequences_to_xml(sequences):
             elif(int(velocity) == 0):
                 dir = 'Synchronous'
 
-        # print("velocity: ", velocity)
         seq_elem = ET.SubElement(root, "sequence", {
             "dir": dir,
             "vel": str(velocity),
@@ -175,7 +173,6 @@ def sequences_to_xml(sequences):
 
 def write_xml_to_file(xml_output, filename):
     filename = filename.split('.')[0]
-    print(filename)
     save_path = filedialog.asksaveasfilename(defaultextension=".seq", filetypes=[("Sequences files", "*.seq")], initialfile = f"{filename.split('.seq')[0]}_detected.seq")
     with open(save_path, 'w', encoding='utf-8') as file:
         file.write('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')

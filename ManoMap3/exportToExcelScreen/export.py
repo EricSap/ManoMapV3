@@ -357,7 +357,6 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
             row += 1
         column += 1
 
-    print(counters)
     # Save the workbook
     wb.save(file_name)
     return wb
