@@ -4,6 +4,7 @@ from patternDetectionScreen.patternDetectionScreen import open_screen_for_patter
 from utils import go_back, toggle_mode
 import sys
 import os
+from PIL import Image
 
 def create_main_screen():
     app = ctk.CTk()
@@ -38,14 +39,25 @@ def create_main_screen():
     main_frame = ctk.CTkFrame(app, corner_radius=0)  
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
+    # Container frame for title and logo
+    title_logo_frame = ctk.CTkFrame(main_frame)
+    title_logo_frame.pack(pady=20)
+
     # Title label
-    title_label = ctk.CTkLabel(main_frame, text="ManoMap", font=("Arial", 30, "bold"))
-    title_label.pack(pady=20)
+    title_label = ctk.CTkLabel(title_logo_frame, text="ManoMap", font=("Arial", 30, "bold"))
+    title_label.pack(side="left", padx=10)
+
+    # Logo
+    logo_path = resource_path("EasyHRM_logo.png")
+    logo_image = Image.open(logo_path)
+    logo = ctk.CTkImage(logo_image, size=(75, 75))
+    logo_label = ctk.CTkLabel(title_logo_frame, image=logo, text="")
+    logo_label.pack(side="left", padx=10)
 
     # Description label
     description_text = (
         "Optimise your colon examination with our application! "
-        "Automate the time-consuming process of identifying colon patterns,"
+        "Automate the time-consuming process of identifying colon patterns. "
         "Save valuable time for examination and analysis, and improve the accuracy of your data."
     )
     description_label = ctk.CTkLabel(main_frame, text=description_text, font=("Arial", 14), wraplength=600, justify="center")

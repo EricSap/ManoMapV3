@@ -13,7 +13,7 @@ result = []
 global input_file_path
 input_file_path = ''
 
-visible_sensors = 40
+visible_sensors = (1,40)
 detection_threshold = 100
 zone_threshold = 100
 min_pattern_length = 3
@@ -48,7 +48,7 @@ def split_continuous_sensors(patterns):
     if current_segment:
         continuous_segments.append(current_segment)
 
-    filtered_segments = [segment for segment in continuous_segments if len(segment) >= 3]
+    filtered_segments = [segment for segment in continuous_segments if len(segment) >= min_pattern_length]
     return filtered_segments
 
 def import_txt_file_detection(file_label, button_export, button_approximate, button_detect_events):
@@ -90,7 +90,6 @@ def approximate_broken_sensor(broken_sensor_entries):
     data = np.array(data, dtype=object)
     
     for broken_sensor in broken_sensor_entries:
-        print(broken_sensor_entries)
         if not broken_sensor.get().strip(' ') == '':
             broken_sensor_index = int(broken_sensor.get())
             # Replace the broken sensor values with the average of the previous and next sensor values
@@ -129,8 +128,10 @@ def read_data(total_seconds):
     global values
     values = dataframe.iloc[:, 1:]
 
+    # Keep only the visible sensors
+    values = values.iloc[:, int(round(visible_sensors[0]))-1:int(round(visible_sensors[1]))]
+
     # Create a mask where values are greater than the threshold
-    print("zone_threshold: ", zone_threshold)
     global mask
     mask = values > zone_threshold
 
@@ -166,7 +167,7 @@ def define_chunks_and_get_patterns():
 
         if split_zone_patterns:
             for pattern in split_zone_patterns:
-                if len(pattern) >= 3:
+                if len(pattern) >= min_pattern_length:
                     result.append(pattern)
     return result
 
@@ -178,10 +179,13 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
     min_pattern_length = int(round(advanced_sliders[1].get()))
     
     global distance_between_sensors
-    distance_between_sensors = int(round(advanced_sliders[3].get()))
+    distance_between_sensors = int(round(advanced_sliders[2].get()))
 
     global zone_threshold
-    zone_threshold = int(round(advanced_sliders[4].get()))
+    zone_threshold = int(round(advanced_sliders[3].get()))
+
+    global visible_sensors
+    visible_sensors = sliders[0].get()
 
     # Extract time from entries
     hour = time_entries[0].get() or 0
@@ -192,7 +196,6 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
     # Validate and convert time
     if validateTime(time_string):
         total_seconds = round(convertTime(time_string) / 10)
-        print("Total seconds:", total_seconds)
     else:
         print("Invalid time format")
     

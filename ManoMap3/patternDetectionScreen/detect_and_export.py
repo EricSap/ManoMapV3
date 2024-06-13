@@ -58,7 +58,6 @@ def approximate_broken_sensor(broken_sensor_entries):
     data = np.array(data, dtype=object)
     
     for broken_sensor in broken_sensor_entries:
-        print(broken_sensor_entries)
         if not broken_sensor.get().strip(' ') == '':
             broken_sensor_index = int(broken_sensor.get())
             # Replace the broken sensor values with the average of the previous and next sensor values
@@ -152,7 +151,6 @@ def define_chunks_and_get_patterns(data):
         if (max_value < detection_threshold and blob_found) or chunk_end_time - chunk_start_time > maximum_chunk_size:
             chunk = data[(data['time'] >= chunk_start_time) & (data['time'] < chunk_end_time)]
             if not chunk.empty:
-                # print("CHUNK",chunk)
                 chunks.append(chunk)
             blob_found = False
 
@@ -190,7 +188,6 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
     # Validate and convert time
     if validateTime(time_string):
         total_seconds = round(convertTime(time_string) / 10)
-        print("Total seconds:", total_seconds)
     else:
         print("Invalid time format")
     read_data(total_seconds)
