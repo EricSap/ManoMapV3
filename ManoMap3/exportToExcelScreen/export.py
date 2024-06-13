@@ -47,7 +47,7 @@ def exportToXlsx(data, file_name, sliders, events, settings_sliders, first_event
     # Write the DataFrame to an Excel file
     try:
         data.to_excel(new_file_name, index=False)
-        insertEmptyRows(new_file_name, 9)
+        insertEmptyRows(new_file_name, 12)
         mergeAndColorCells(new_file_name, sliders)
         event_names = []
         for time, event_name in events.items():
@@ -102,14 +102,14 @@ def mergeAndColorCells(file_name, sliders):
     for i, (start, end) in enumerate(sliders):
         start_col = get_column_letter(start + 11)
         end_col = get_column_letter(end + 11)
-        ws.merge_cells(f'{start_col}22:{end_col}22')
-        cell = ws[f'{start_col}22']
+        ws.merge_cells(f'{start_col}25:{end_col}25')
+        cell = ws[f'{start_col}25']
         cell.value = sections[i]
         cell.alignment = Alignment(horizontal='center', vertical='center')
         fill = PatternFill(start_color=colors[sections[i]], end_color=colors[sections[i]], fill_type="solid")
         cell.fill = fill
         for col in range(start + 11, end + 12):
-            ws[f'{get_column_letter(col)}22'].fill = fill
+            ws[f'{get_column_letter(col)}25'].fill = fill
 
     # Save the workbook
     wb.save(file_name)
@@ -121,7 +121,7 @@ def addEventNameAtGivenTime(file_name, hour, minute, second, event_name):
     
     # Find the insertion row based on the specified hour, minute, and second
     insertion_row = None
-    for row in range(24, ws.max_row + 1):
+    for row in range(27, ws.max_row + 1):
         cell_hour = ws.cell(row=row, column=2).value
         cell_minute = ws.cell(row=row, column=3).value
         cell_second = ws.cell(row=row, column=4).value
@@ -214,6 +214,9 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
         "aantal short r": 0,
         "aantal long a": 0,
         "aantal short a": 0,
+        "cyclic s": 0,
+        "cyclic r": 0,
+        "cyclic a": 0,
     }
 
     high_amplitude_counters_template = {
@@ -238,7 +241,7 @@ def assignSectionsBasedOnStartSection(file_name, sliders, event_names, settings_
     high_amplitude_counter = high_amplitude_counters_template.copy()
     
     # Iterate over each row starting from row 24
-    for row in range(24, ws.max_row + 1):
+    for row in range(27, ws.max_row + 1):
         pattern = ws.cell(row=row, column=6).value
         length = ws.cell(row=row, column=10).value
         if(isinstance(length, int)):
