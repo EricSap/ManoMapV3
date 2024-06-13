@@ -9,7 +9,6 @@ def create_main_screen():
     app = ctk.CTk()
     app.title("EasyHRM")
     app.geometry("1200x800")
-    #add the icon EasyHRM_icon.ico
 
     def resource_path(relative_path):
         """ Get the absolute path to the resource, works for dev and for PyInstaller """
@@ -17,7 +16,7 @@ def create_main_screen():
             # PyInstaller creates a temp folder and stores path in _MEIPASS
             base_path = sys._MEIPASS
         except Exception:
-            base_path = os.path.abspath(".")
+            base_path = os.path.abspath("./ManoMap3")
 
         return os.path.join(base_path, relative_path)
 
