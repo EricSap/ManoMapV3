@@ -13,7 +13,7 @@ result = []
 global input_file_path
 input_file_path = ''
 
-visible_sensors = 40
+visible_sensors = (1,40)
 detection_threshold = 100
 zone_threshold = 100
 min_pattern_length = 3
@@ -128,6 +128,9 @@ def read_data(total_seconds):
     global values
     values = dataframe.iloc[:, 1:]
 
+    # Keep only the visible sensors
+    values = values.iloc[:, int(round(visible_sensors[0]))-1:int(round(visible_sensors[1]))]
+
     # Create a mask where values are greater than the threshold
     global mask
     mask = values > zone_threshold
@@ -180,6 +183,9 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
 
     global zone_threshold
     zone_threshold = int(round(advanced_sliders[3].get()))
+
+    global visible_sensors
+    visible_sensors = sliders[0].get()
 
     # Extract time from entries
     hour = time_entries[0].get() or 0

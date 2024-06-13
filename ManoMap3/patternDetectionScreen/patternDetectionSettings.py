@@ -7,7 +7,7 @@ def create_settings_frame(root):
 
     # Format for each setting: (label_text, from_, to)
     settings = [
-        # ("Visible sensors:", 1, 40)
+        ("Visible sensors:", 1, 40)
     ]
 
     sliders = []
