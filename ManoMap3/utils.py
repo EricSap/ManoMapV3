@@ -133,7 +133,7 @@ def process_sequences(data):
 
     return sequences
 
-def sequences_to_xml(sequences):
+def sequences_to_xml(sequences, distance_between_sensors):
     root = ET.Element("sequences")
 
     for seq in sequences:
@@ -142,7 +142,7 @@ def sequences_to_xml(sequences):
             velocity = "INF"
             dir = 'Synchronous'
         else:
-            velocity = ((int(seq["endChannel"]) - int(seq["startChannel"])) * 25 ) / (time / 10)
+            velocity = ((int(seq["endChannel"]) - int(seq["startChannel"])) * distance_between_sensors ) / (time / 10)
             if int(velocity) > 0:
                 dir = 'Antegrade'
             elif int(velocity) < 0:

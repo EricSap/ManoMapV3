@@ -210,5 +210,5 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
 
 def exportToXML():
     sequences = process_sequences(result)
-    xml_output = sequences_to_xml(sequences)
+    xml_output = sequences_to_xml(sequences, distance_between_sensors)
     write_xml_to_file(xml_output, filename)
