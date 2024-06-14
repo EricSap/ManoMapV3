@@ -95,19 +95,24 @@ def approximate_broken_sensor(broken_sensor_entries):
             # Replace the broken sensor values with the average of the previous and next sensor values
             for row in data:
                 if broken_sensor_index == 1:
-                    row[broken_sensor_index] = row[broken_sensor_index + 1]
-                elif broken_sensor_index == len(row) - 1:
-                    row[broken_sensor_index] = row[broken_sensor_index - 1]
+                    row[broken_sensor_index+1] = row[broken_sensor_index+2]
+                elif broken_sensor_index == len(row) - 2:
+                    row[broken_sensor_index+1] = row[broken_sensor_index]
                 else:
-                    row[broken_sensor_index] = int(round((row[broken_sensor_index-1] + row[broken_sensor_index + 1]) / 2))
+                    row[broken_sensor_index-1] = int(round((row[broken_sensor_index-2] + row[broken_sensor_index]) / 2))
 
     # Prompt the user to select where to save the new file
     save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")], initialfile = f"{filename.split('.txt')[0]}_approximated.txt")
     
-    # Save the modified data back to the file or return it
+    # Save the modified data back to the file in the same format
     with open(save_path, 'w') as file:
         for row in data:
-            file.write(f"{row[0]:.1f} " + ' '.join(map(str, map(int, row[1:]))) + '\n')
+            # Format row[0] and strip '.0' if necessary
+            row_0_str = f"{row[0]:.1f}".rstrip('0').rstrip('.') if row[0] % 1 == 0 else f"{row[0]:.1f}"
+            formatted_row = f"{row_0_str}\t\t {row[1]:d}"
+            for value in row[2:]:
+                formatted_row += f"\t {value:d}"
+            file.write(formatted_row + '\n')
 
     print(f"File saved as: {save_path}")
 
@@ -210,5 +215,5 @@ def compute_patterns(sliders, advanced_sliders, time_entries, settings_frame, bu
 
 def exportToXML():
     sequences = process_sequences(result)
-    xml_output = sequences_to_xml(sequences)
+    xml_output = sequences_to_xml(sequences, distance_between_sensors)
     write_xml_to_file(xml_output, filename)
