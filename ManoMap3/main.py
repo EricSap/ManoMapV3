@@ -17,7 +17,7 @@ def create_main_screen():
             # PyInstaller creates a temp folder and stores path in _MEIPASS
             base_path = sys._MEIPASS
         except Exception:
-            base_path = os.path.abspath("./ManoMap3")
+            base_path = os.path.abspath("../ManoMap3")
 
         return os.path.join(base_path, relative_path)
 
@@ -40,7 +40,7 @@ def create_main_screen():
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
     # Container frame for title and logo
-    title_logo_frame = ctk.CTkFrame(main_frame)
+    title_logo_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
     title_logo_frame.pack(pady=20)
 
     # Title label
