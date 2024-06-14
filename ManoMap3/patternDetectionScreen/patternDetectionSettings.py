@@ -79,7 +79,6 @@ def create_advanced_settings_frame(root):
     settings = [
         ("Detection threshold", 1, 200, 100),
         ("Minimum number of sensors", 1, 10, 3),
-        ("Maximum chunk size (s)", 1, 100, 50),
         ("Distance between sensors (mm)", 1, 50, 25),
         ("Zone threshold", 1, 200, 100)
     ]

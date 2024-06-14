@@ -6,7 +6,6 @@ commentsDict = {}
 def placeComment(settings_frame):
     global commentsDict, hourText, minText, secText, commentText  # Add hourText, minText, secText, commentText as globals
     time = get_time_text()
-    print(time)
     comment = commentText.get()
     if validateTime(time):
         commentsDict[convertTime(time)] = comment

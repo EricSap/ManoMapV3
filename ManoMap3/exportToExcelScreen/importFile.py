@@ -12,6 +12,7 @@ def select_input_file(root, label, button_export):
     # Check if a file was selected
     if not file_path:
         print("No file selected.")
+        label.configure(text="No file selected")
         button_export.configure(state='disabled')
         return None, None
 

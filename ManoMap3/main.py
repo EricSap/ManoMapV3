@@ -2,11 +2,27 @@ import customtkinter as ctk
 from exportToExcelScreen.exportToExcelScreen import export_to_excel_screen
 from patternDetectionScreen.patternDetectionScreen import open_screen_for_pattern_detection
 from utils import go_back, toggle_mode
+import sys
+import os
+from PIL import Image
 
 def create_main_screen():
     app = ctk.CTk()
-    app.title("CustomTkinter Application")
+    app.title("EasyHRM")
     app.geometry("1200x800")
+
+    def resource_path(relative_path):
+        """ Get the absolute path to the resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath("../ManoMap3")
+
+        return os.path.join(base_path, relative_path)
+
+    icon_path = resource_path("EasyHRM_icon.ico")
+    app.iconbitmap(icon_path)
 
     # Center the window on the screen
     screen_width = app.winfo_screenwidth()
@@ -23,14 +39,25 @@ def create_main_screen():
     main_frame = ctk.CTkFrame(app, corner_radius=0)  
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
+    # Container frame for title and logo
+    title_logo_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+    title_logo_frame.pack(pady=20)
+
     # Title label
-    title_label = ctk.CTkLabel(main_frame, text="ManoMap", font=("Arial", 30, "bold"))
-    title_label.pack(pady=20)
+    title_label = ctk.CTkLabel(title_logo_frame, text="ManoMap", font=("Arial", 30, "bold"))
+    title_label.pack(side="left", padx=10)
+
+    # Logo
+    logo_path = resource_path("EasyHRM_logo.png")
+    logo_image = Image.open(logo_path)
+    logo = ctk.CTkImage(logo_image, size=(75, 75))
+    logo_label = ctk.CTkLabel(title_logo_frame, image=logo, text="")
+    logo_label.pack(side="left", padx=10)
 
     # Description label
     description_text = (
         "Optimise your colon examination with our application! "
-        "Automate the time-consuming process of identifying colon patterns,"
+        "Automate the time-consuming process of identifying colon patterns. "
         "Save valuable time for examination and analysis, and improve the accuracy of your data."
     )
     description_label = ctk.CTkLabel(main_frame, text=description_text, font=("Arial", 14), wraplength=600, justify="center")
