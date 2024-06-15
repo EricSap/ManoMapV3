@@ -17,7 +17,7 @@ def create_main_screen():
             # PyInstaller creates a temp folder and stores path in _MEIPASS
             base_path = sys._MEIPASS
         except Exception:
-            base_path = os.path.abspath("../EasyHRM")
+            base_path = os.path.abspath("./EasyHRM")
 
         return os.path.join(base_path, relative_path)
 
@@ -44,7 +44,7 @@ def create_main_screen():
     title_logo_frame.pack(pady=20)
 
     # Title label
-    title_label = ctk.CTkLabel(title_logo_frame, text="ManoMap", font=("Arial", 30, "bold"))
+    title_label = ctk.CTkLabel(title_logo_frame, text="EasyHRM", font=("Arial", 30, "bold"))
     title_label.pack(side="left", padx=10)
 
     # Logo
